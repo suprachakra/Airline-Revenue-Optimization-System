@@ -13,31 +13,31 @@
 
 ```mermaid
 gantt
-    title AROS Two-Year Roadmap (Apr 2025 - Apr 2027)
+    title IAROS Two-Year Roadmap (March 2025 - March 2027)
     dateFormat  YYYY-MM
     todayMarker 2025-04
     
-    section Phase 1: Infrastructure & MVP (Months 1-3)
-    Cloud Foundation           :infra, 2025-04, 3m
-    Pricing Engine MVP         :pricing, after infra, 2m
-    Ancillary Bundling MVP     :ancillary, after pricing, 2m
-    Forecasting Models MVP     :forecast, after ancillary, 2m
-    Network Optimization MVP   :network, after forecast, 2m
-
-    section Phase 2: Integration & Pilot (Months 4-6)
-    Fuel Optimization MVP      :fuel, 2025-10, 2m
-    Compliance Automation      :compl, after fuel, 2m
-    Global Rollout Pilot       :global1, after compl, 3m
-
-    section Phase 3: Expansion & Digital (Months 7-10)
-    Digital Experience Upgrade :digital, 2026-01, 3m
-    Advanced BI Integration    :bi, after digital, 3m
-    Full Global Deployment     :global2, after bi, 4m
-
-    section Phase 4: Future Innovations (Months 11-24)
-    Quantum Scheduling Pilots  :quantum, 2026-08, 4m
-    Blockchain Loyalty 2.0     :blockchain, after quantum, 4m
-    AI Copilot Integration     :ai, after blockchain, 4m
+    section Phase 1: Infrastructure & MVP Development (Q2 2025)
+    Cloud Foundation           :active, phase1a, 2025-04, 2025-05
+    Dynamic Pricing MVP        :active, phase1b, 2025-05, 2025-06
+    Ancillary Bundling MVP     :         phase1c, 2025-06, 2025-07
+    Forecasting Module MVP     :         phase1d, 2025-07, 2025-08
+    
+    section Phase 2: System Integration & Pilot (Q3-Q4 2025)
+    Network Optimization       :         phase2a, 2025-08, 2025-09
+    Fuel Efficiency Models     :         phase2b, 2025-09, 2025-10
+    Compliance Automation      :         phase2c, 2025-10, 2025-11
+    Regional Pilot Rollout     :         phase2d, 2025-11, 2026-01
+    
+    section Phase 3: Global Expansion (2026)
+    Digital Experience Upgrade :         phase3a, 2026-01, 2026-03
+    Advanced BI Integration    :         phase3b, 2026-03, 2026-05
+    Full Global Deployment     :         phase3c, 2026-05, 2026-08
+    
+    section Phase 4: Future Innovations (2026-2027)
+    Quantum Scheduling Pilots  :         phase4a, 2026-08, 2026-10
+    Blockchain Loyalty 2.0     :         phase4b, 2026-10, 2027-01
+    AI Copilot Integration     :         phase4c, 2027-01, 2027-03
 
 ```
 
