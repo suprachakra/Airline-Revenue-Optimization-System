@@ -11,9 +11,10 @@
 | **Phase 3: Expansion, Optimization & Digital Transformation** | 6–10                   | - **Digital Experience Enhancements:** Refine UI/UX for ancillary offers across mobile/web platforms.<br>- **Advanced BI Integration:** Deploy unified dashboards and real‑time analytics for proactive decision‑making.<br>- **Global Rollout Phase 2:** Scale deployment to additional regions and partners.                                                                                         | Improved customer engagement, higher conversion rates, and seamless global operations.                                   |
 | **Phase 4: Future Innovations & Strategic Roadmap** | 10–24                  | - **Next‑Generation Innovation Kickoff:** Initiate R&D for quantum annealing, advanced blockchain loyalty, and enhanced predictive analytics.<br>- **Advanced Analytics Expansion:** Scale up new AI models and further integrate BI tools.<br>- **Continuous Improvement:** Establish regular review cycles to iterate on performance and cost optimization.<br>- **Global Expansion:** Complete full‑scale global rollout with localized configurations and partner integrations.<br>- **Final Roadmap Revision:** Finalize a strategic long‑term roadmap for next‑generation enhancements. | A future‑proof, continuously improving system that sustains high performance, regulatory compliance, and revenue growth globally.          |
 
+
 ```mermaid
 gantt
-    title IAROS Two-Year Roadmap (March 2025 - March 2027)
+    title AROS Two-Year Roadmap (March 2025 - March 2027)
     dateFormat  YYYY-MM
     todayMarker 2025-04
     
