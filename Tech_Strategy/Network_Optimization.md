@@ -1,49 +1,121 @@
-# Network Optimization
-The network optimization module enhances flight scheduling, inventory allocation, and codeshare synchronization by integrating real-time revenue data. It leverages advanced simulation models to provide actionable insights, ensuring operational efficiency and cost savings.
+# Network Optimization Module
+Enhance flight scheduling, inventory allocation, and codeshare synchronization through advanced simulation models and real-time data integration. The module employs Monte Carlo simulations and other predictive techniques to optimize operational efficiency while incorporating fallback paths when real-time data (e.g., from ACARS) is delayed.
 
-## Key Components
+---
 
-### 1. A380 Rotation Algorithm
-- **Purpose:**  
-  Optimize aircraft utilization for high-capacity flights.
-- **Implementation:**
+## 1. Overview
+
+The Network Optimization Module is designed to:
+- **Optimize Flight Scheduling:** Adjust aircraft rotations (e.g., for A380) to maximize revenue and minimize fuel consumption.
+- **Dynamic Inventory Allocation:** Reallocate seat inventory in real time based on demand forecasts.
+- **Codeshare Synchronization:** Ensure accurate and consistent flight data with partner airlines.
+
+The Network Optimization Module enhances flight scheduling, inventory allocation, and codeshare synchronization by integrating real-time revenue and operational data. Advanced simulation models—including Monte Carlo simulations—are employed to generate optimal schedules and inventory adjustments. Robust fallback paths are in place to handle delays or inaccuracies in real-time data (e.g., from ACARS), ensuring continuous operation and significant cost savings (targeting up to 12% fuel savings on transatlantic routes).
+
+---
+
+## 2. Key Components
+### 2.1 Flight Scheduling Optimization: Monte Carlo Simulation Engine
+
+| **Aspect**         | **Details**                                                                                                                                                         |
+|--------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| **Purpose**        | Optimize aircraft utilization (e.g., A380 rotations) by simulating various schedule scenarios and selecting the one with the lowest delay/fuel cost.              |
+| **Method**         | Utilize Monte Carlo simulations to explore 1,000+ random rotation scenarios using real-time and historical operational data.                                           |
+| **Fallback Strategy** | If live data (e.g., from ACARS) is stale (older than 15 minutes), automatically switch to an alternative data source such as the FAA ASDI feed.                    |
+
+**Implementation Example (Python):**
 ```python
 # File: services/network_service/src/Scheduler.py
+import numpy as np
+
 def optimize_a380():
     current_schedule = get_current_schedule()
     best_score = evaluate_schedule(current_schedule)
-    for i in range(1000):  # Monte Carlo simulation
-        swap = monte_carlo_search(current_schedule)
-        score = evaluate_schedule(swap)
-        if score > best_score:
-            best_score = score
-            current_schedule = swap
+    # Run Monte Carlo simulation for 1000 iterations
+    for i in range(1000):
+        candidate_schedule = monte_carlo_search(current_schedule)
+        candidate_score = evaluate_schedule(candidate_schedule)
+        if candidate_score < best_score:
+            best_score = candidate_score
+            current_schedule = candidate_schedule
     return current_schedule
+
+# Fallback: If ACARS data is older than 15 minutes, retrieve updated schedule from FAA ASDI.
 ```
-- **Fallback:**  
-  If simulation data is stale (e.g., ACARS data >15 min old), revert to FAA ASDI feed for schedule updates.
+---
 
-### 2. Real-Time Inventory Reallocation
-- **Purpose:**  
-  Adjust seat inventory dynamically based on real-time demand.
-- **Implementation:**  
-  Integrates signals from the dynamic pricing and forecasting modules to reallocate seats.
-- **Fallback:**  
-  Uses historical allocation patterns if live data is unavailable or inconsistent.
+### 2.2 Real-Time Inventory Reallocation
 
-### 3. Codeshare Synchronization
-- **Purpose:**  
-  Ensure accurate and consistent flight data with partner airlines.
-- **Implementation:**  
-  Utilizes secure APIs with robust retry logic.
-- **Fallback:**  
-  Maintains the last known configuration if synchronization fails beyond a threshold (e.g., >5% discrepancy).
+| **Aspect**             | **Implementation Details**                                                                                                                                                      | **Fallback Strategy**                                                                                                  |
+|------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|------------------------------------------------------------------------------------------------------------------------|
+| **Purpose**            | Dynamically adjust seat inventory based on demand forecasts from dynamic pricing and forecasting modules.                                                                    | If real-time demand signals are unavailable, default to historical allocation patterns.                              |
+| **Method**             | Integrate signals from pricing and forecasting modules to reassign seat inventory across flights in real time.                                                                | Use cached inventory data from the previous day if live data fails to update.                                          |
+| **Monitoring**         | Continuous monitoring via Prometheus ensures that inventory adjustments are applied within defined SLA thresholds.                                                             | Trigger alerts for manual review if discrepancies exceed 5%.                                                          |
+| **Fallback Strategy** | In case of data unavailability or inconsistency, default to historical inventory allocation patterns from the previous day.                                            |
 
-## Handling External Data Delays
-- **Monitoring:**  
-  Alerts are configured in our observability stack to notify if external data (e.g., from Sabre or ACARS) is delayed.
-- **Fallback Triggers:**  
-  If live data falls below a quality threshold, the system automatically switches to a fallback data source.
+---
 
-*This module is critical for operational savings (e.g., 12% fuel savings on transatlantic routes) and ensures that network planning remains agile even under adverse conditions.*
+### 2.3 Codeshare Synchronization
+
+| **Aspect**             | **Implementation Details**                                                                                                                                                      | **Fallback Strategy**                                                                                                  |
+|------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|------------------------------------------------------------------------------------------------------------------------|
+| **Purpose**            | Synchronize flight data with partner airlines to ensure consistency in schedules and inventory.                                                                               | If API synchronization fails or data discrepancies exceed 5%, maintain the last known good configuration.               |
+| **Method**             | Utilize secure APIs with robust retry logic and data validation to fetch and update codeshare information.                                                                    | In the event of persistent errors, alert the operations team and default to the last synchronized data snapshot.         |
+| **Fallback Strategy** | If synchronization discrepancies exceed 5%, revert to the last known good configuration and alert the operations team for manual review.                            |
+| **Example Code**       | See pseudocode below.                                                                                                                                                           | Log errors for postmortem analysis.                                                                                    |
+
+**Pseudocode (Go):**
+```go
+// File: services/network_service/src/PartnerSync.go
+func SyncCodeshareData() error {
+    data, err := partnerAPI.FetchFlightData()
+    if err != nil {
+        log.Error("Codeshare synchronization failed:", err)
+        return err  // Trigger fallback: use last known configuration
+    }
+    // Validate data and update system state
+    updateFlightSchedule(data)
+    return nil
+}
 ```
+
+---
+
+## 3. Handling External Data Delays
+
+| **Data Type**         | **Threshold**                | **Action**                                       |
+|-----------------------|------------------------------|--------------------------------------------------|
+| **Flight Status**     | >15 minutes stale            | Switch to FAA ASDI feed                          |
+| **Demand Forecast**   | MAE >20%                     | Use 14-day rolling average                       |
+| **Partner Schedules** | >5% discrepancy              | Revert to last valid cached configuration        |  
+
+**Mermaid Diagram:**
+```mermaid
+flowchart LR
+    A[Real-Time ACARS Data] -- Delay/Quality Check --> B{Data Valid?}
+    B -- Yes --> C[Use ACARS Data]
+    B -- No --> D[Switch to FAA ASDI Feed]
+    D --> C
+```
+---
+
+## 4. Testing and Validation
+
+| **Testing Type**        | **Description**                                                                                                              | **Tools/Methods**                                        |
+|-------------------------|------------------------------------------------------------------------------------------------------------------------------|----------------------------------------------------------|
+| **Unit Tests**          | Validate individual functions (e.g., simulation, inventory adjustment) with various data scenarios.                           | Python unittest, Go testing framework                    |
+| **Integration Tests**   | End-to-end tests simulate the complete data flow from real-time inputs to schedule optimization and codeshare synchronization. | CI/CD pipelines (GitHub Actions, Jenkins)                |
+| **Monitoring & Alerts** | Continuous monitoring via Prometheus, Grafana, and Jaeger; alert thresholds set for data delays and integration errors.         | Prometheus, Grafana, Jaeger                              |
+
+---
+
+## 5. Summary & Final Validation
+
+| **Aspect**                | **Description**                                                                                                                       |
+|---------------------------|---------------------------------------------------------------------------------------------------------------------------------------|
+| **Operational Robustness**| Every component includes detailed fallback strategies, ensuring continuous operation even when real-time data is delayed or unavailable. |
+| **Integration Efficiency**| The module seamlessly integrates dynamic pricing, forecasting, and codeshare data to optimize flight schedules and inventory.         |
+| **Regulatory Compliance** | Designed to meet industry standards and regulatory requirements (e.g., IATA guidelines) with robust monitoring and audit trails.         |
+| **Comprehensive Testing** | Extensive unit and integration tests, combined with real-time monitoring, ensure that any failure triggers automatic fallback mechanisms. |
+
+---
