@@ -52,8 +52,12 @@ Each module (Dynamic Pricing, Ancillary Services, AI Forecasting, Network Planni
   All services are packaged in Docker containers and managed on Kubernetes (using AKS or OpenShift), ensuring auto‑scaling, load balancing, and zero‑downtime deployments.
 - **Multi‑Region Deployment:**  
   Critical services are deployed across multiple regions to ensure high availability and disaster recovery.
+- **CI/CD Automation:**
+Fully automated pipelines (using GitHub Actions, Jenkins, or Azure Pipelines) enforce rigorous testing, blue-green or canary deployments, and automated rollbacks.
 - **Observability:**  
   The architecture integrates Prometheus, Grafana, and Jaeger for monitoring, logging, and distributed tracing to quickly identify and remediate issues.
+- **Infrastructure as Code:**
+  Managed via Terraform to ensure consistency, repeatability, and automated deployments across environments.
 
 ### 4. Error Handling and Fallback Mechanisms
 - **Circuit Breakers & Retry Logic:**  
@@ -70,6 +74,10 @@ hystrix.ConfigureCommand("geo-fencing", hystrix.CommandConfig{
   Detailed fallback strategies are built into each module. For example, if a pricing API call fails, the system automatically uses cached data and triggers an alert for manual intervention.
 - **Automated Health Checks:**  
   Readiness and liveness probes are configured in Kubernetes to detect and recover from failures immediately.
+- **Enhanced Security:**
+  Data encryption (in transit and at rest), secret management (using Kubernetes Secrets or Vault), and automated vulnerability scanning ensure compliance with GDPR, IATA, and industry best practices.
+
+
 
 ## Summary
 This architecture is designed to be resilient, scalable, and fault‑tolerant. It provides continuous operation even in the event of partial failures by leveraging robust fallback mechanisms, automated monitoring, and multi‑region deployment strategies.
