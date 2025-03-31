@@ -21,3 +21,17 @@ regression_test:
   rules:
     - if: $CI_PIPELINE_SOURCE == "merge_request_event"
   allow_failure: false
+```
+
+### 3. Fallback & Recovery
+- **Rollback Mechanism:**
+  - Immediate automated rollback to the last stable release if regression tests fail.
+
+- **Alerting:**
+  - Automated alerts notify the QA and engineering teams for further investigation.
+
+### 4. Continuous Monitoring
+- **Post-Deployment:**
+  - Ongoing monitoring using Prometheus and Grafana ensures no regressions occur in production.
+
+This regression testing framework ensures that IAROS remains robust with every code change, with fully automated safeguards that prevent disruptions to existing functionalities.
