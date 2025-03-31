@@ -1,4 +1,4 @@
-# Requirements Documentation**
+# Requirements Documentation
 These are the Functional Requirements (FRs) and Non‑Functional Requirements (NFRs) for IAROS. Each requirement is specified with rigorous acceptance criteria, automated fallback strategies, and cross‑department validations to ensure a resilient, scalable, and compliant system.
 
 ---
