@@ -1,9 +1,4 @@
 # Network Optimization Module
-Enhance flight scheduling, inventory allocation, and codeshare synchronization through advanced simulation models and real-time data integration. The module employs Monte Carlo simulations and other predictive techniques to optimize operational efficiency while incorporating fallback paths when real-time data (e.g., from ACARS) is delayed.
-
----
-
-## 1. Overview
 
 The Network Optimization Module is designed to:
 - **Optimize Flight Scheduling:** Adjust aircraft rotations (e.g., for A380) to maximize revenue and minimize fuel consumption.
@@ -14,8 +9,8 @@ The Network Optimization Module enhances flight scheduling, inventory allocation
 
 ---
 
-## 2. Key Components
-### 2.1 Flight Scheduling Optimization: Monte Carlo Simulation Engine
+## 1. Key Components
+### 1.1 Flight Scheduling Optimization: Monte Carlo Simulation Engine
 
 | **Aspect**         | **Details**                                                                                                                                                         |
 |--------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------|
@@ -39,29 +34,28 @@ def optimize_a380():
             best_score = candidate_score
             current_schedule = candidate_schedule
     return current_schedule
-
-# Fallback: If ACARS data is older than 15 minutes, retrieve updated schedule from FAA ASDI.
 ```
+#### Fallback: 
+- Threshold: If real‑time ACARS data is delayed for more than 15 minutes.
+- Action: Automatically switch to an alternate data source (e.g., FAA ASDI feed) or revert to historical average schedules.
 ---
 
-### 2.2 Real-Time Inventory Reallocation
+### 1.2 Real-Time Inventory Reallocation
 
 | **Aspect**             | **Implementation Details**                                                                                                                                                      | **Fallback Strategy**                                                                                                  |
 |------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|------------------------------------------------------------------------------------------------------------------------|
 | **Purpose**            | Dynamically adjust seat inventory based on demand forecasts from dynamic pricing and forecasting modules.                                                                    | If real-time demand signals are unavailable, default to historical allocation patterns.                              |
 | **Method**             | Integrate signals from pricing and forecasting modules to reassign seat inventory across flights in real time.                                                                | Use cached inventory data from the previous day if live data fails to update.                                          |
 | **Monitoring**         | Continuous monitoring via Prometheus ensures that inventory adjustments are applied within defined SLA thresholds.                                                             | Trigger alerts for manual review if discrepancies exceed 5%.                                                          |
-| **Fallback Strategy** | In case of data unavailability or inconsistency, default to historical inventory allocation patterns from the previous day.                                            |
 
 ---
 
-### 2.3 Codeshare Synchronization
+### 1.3 Codeshare Synchronization
 
 | **Aspect**             | **Implementation Details**                                                                                                                                                      | **Fallback Strategy**                                                                                                  |
 |------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|------------------------------------------------------------------------------------------------------------------------|
 | **Purpose**            | Synchronize flight data with partner airlines to ensure consistency in schedules and inventory.                                                                               | If API synchronization fails or data discrepancies exceed 5%, maintain the last known good configuration.               |
-| **Method**             | Utilize secure APIs with robust retry logic and data validation to fetch and update codeshare information.                                                                    | In the event of persistent errors, alert the operations team and default to the last synchronized data snapshot.         |
-| **Fallback Strategy** | If synchronization discrepancies exceed 5%, revert to the last known good configuration and alert the operations team for manual review.                            |
+| **Method**             | Utilize secure APIs with robust retry logic and data validation to fetch and update codeshare information. (e.g., leveraging SHAP analysis to verify consistency).                                                                   | In the event of persistent errors, alert the operations team and default to the last synchronized data snapshot.         |
 | **Example Code**       | See pseudocode below.                                                                                                                                                           | Log errors for postmortem analysis.                                                                                    |
 
 **Pseudocode (Go):**
@@ -81,7 +75,7 @@ func SyncCodeshareData() error {
 
 ---
 
-## 3. Handling External Data Delays
+### 2. Handling External Data Delays
 
 | **Data Type**         | **Threshold**                | **Action**                                       |
 |-----------------------|------------------------------|--------------------------------------------------|
@@ -99,7 +93,7 @@ flowchart LR
 ```
 ---
 
-## 4. Testing and Validation
+### 3. Testing and Validation
 
 | **Testing Type**        | **Description**                                                                                                              | **Tools/Methods**                                        |
 |-------------------------|------------------------------------------------------------------------------------------------------------------------------|----------------------------------------------------------|
@@ -109,7 +103,7 @@ flowchart LR
 
 ---
 
-## 5. Summary & Final Validation
+### 4. Summary & Final Validation
 
 | **Aspect**                | **Description**                                                                                                                       |
 |---------------------------|---------------------------------------------------------------------------------------------------------------------------------------|
