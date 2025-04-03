@@ -1,4 +1,4 @@
-# Network Optimization Module
+## Network Optimization Module
 
 The Network Optimization Module is designed to:
 - **Optimize Flight Scheduling:** Adjust aircraft rotations (e.g., for A380) to maximize revenue and minimize fuel consumption.
@@ -9,8 +9,8 @@ The Network Optimization Module enhances flight scheduling, inventory allocation
 
 ---
 
-## 1. Key Components
-### 1.1 Flight Scheduling Optimization: Monte Carlo Simulation Engine
+### 1. Key Components
+#### 1.1 Flight Scheduling Optimization: Monte Carlo Simulation Engine
 
 | **Aspect**         | **Details**                                                                                                                                                         |
 |--------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------|
@@ -40,7 +40,7 @@ def optimize_a380():
 - Action: Automatically switch to an alternate data source (e.g., FAA ASDI feed) or revert to historical average schedules.
 ---
 
-### 1.2 Real-Time Inventory Reallocation
+#### 1.2 Real-Time Inventory Reallocation
 
 | **Aspect**             | **Implementation Details**                                                                                                                                                      | **Fallback Strategy**                                                                                                  |
 |------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|------------------------------------------------------------------------------------------------------------------------|
@@ -50,7 +50,7 @@ def optimize_a380():
 
 ---
 
-### 1.3 Codeshare Synchronization
+#### 1.3 Codeshare Synchronization
 
 | **Aspect**             | **Implementation Details**                                                                                                                                                      | **Fallback Strategy**                                                                                                  |
 |------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|------------------------------------------------------------------------------------------------------------------------|
