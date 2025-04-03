@@ -54,7 +54,7 @@ func FetchFlightData() ([]Flight, error) {
   - **Fallback:** Uses historical market data to approximate current conditions.
 - **Monitoring:** Automated alerts trigger if data freshness falls below a defined threshold.
 
-### 5. Error Handling & Automated Fallbacks
+#### 5. Error Handling & Automated Fallbacks
 #### 5.1 Retry Logic & Circuit Breakers
 - **Description:**  
   Every external API call incorporates retry logic (exponential backoff) and circuit breakers to prevent cascading failures.
@@ -70,14 +70,14 @@ hystrix.ConfigureCommand("geo-fencing", hystrix.CommandConfig{
 })
 ```
 
-### 5.2 Automated Monitoring & Alerting
+#### 5.2 Automated Monitoring & Alerting
 - **Description:**  
   Integrate with Prometheus, Grafana, and Jaeger for real‑time monitoring.
 - **Fallback:**  
   - Automated alerts trigger rollback or fallback routines when integration errors or data delays occur.
----
 
-### 6. Documentation & Compliance
+
+#### 6. Documentation & Compliance
 - **Integration Documentation:**  
   All API endpoints, protocols, and data schemas are documented in the `common/api/openapi.yaml` and `internal_apis.md`.
 - **Compliance:**  
