@@ -6,15 +6,33 @@ IAROS integrates with multiple external systems to ensure a seamless flow of dat
 
 #### 1. Passenger Service System (PSS)
 - **Integration:** Amadeus Altéa API
-- **Purpose:** Synchronize booking and inventory data.
+- **Purpose:** Sync flight data, inventory, and booking information.
+- **Implementation:**  
+  - RESTful API calls and real‑time event streams via Azure Event Hub.
 - **Error Handling:**  
-  - **Retry Logic:** Retries with exponential backoff on failure.
-  - **Fallback:** Uses cached inventory data if real-time data retrieval fails.
+  - **Retry Logic:** Error handling includes retries with exponential backoff and circuit breakers.
+  - **Fallback:** If live data is delayed, automatically switch to a cached dataset or alternative feed (e.g., Sabre Red 360).
 - **Monitoring:** Alerts configured in Prometheus if synchronization latency exceeds 500ms.
+- **Example Pseudocode (Go):**
+```go
+// File: services/pss_integration/src/PSSClient.go
+func FetchFlightData() ([]Flight, error) {
+    data, err := callAPI("https://api.amadeus.com/flightdata")
+    if err != nil || data == nil {
+        log.Error("Primary PSS API failed, switching to cache")
+        return getCachedFlightData(), nil
+    }
+    return data, nil
+}
+```
 
 #### 2. Loyalty Systems
 - **Integration:** Secure GraphQL API for loyalty data (e.g., Etihad Guest)
 - **Purpose:** Retrieve customer profiles, loyalty tiers, and reward points.
+- **Implementation:**  
+  - Use GraphQL APIs to retrieve and update loyalty data.
+  - Validate data consistency with automated reconciliation.
+  - Real-time data sync with customer profiles.
 - **Error Handling:**  
   - **Fallback:** Applies a default loyalty tier if the API is unresponsive.
   - **Security:** Ensures OAuth2-based authentication.
