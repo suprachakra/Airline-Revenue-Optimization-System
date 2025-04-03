@@ -128,7 +128,7 @@ Below are the detailed tables for Qatar Airways Forecasting Models. Each table i
 
 ### ARIMA Model Implementation
 - **Usage:**  
-  Captures seasonal trends and linear growth.
+  Captures seasonal trends and linear growth. Ideal for steady, predictable components of demand.
 - **Example:**
 ```python
 # File: services/forecasting_service/src/ARIMA_Model.py
@@ -146,7 +146,7 @@ def train_arima_model(data, order=(2,1,1)):
 
 ### LSTM Model Implementation
 - **Usage:**  
-  Forecasts non-linear patterns such as crew fatigue or cargo demand fluctuations.
+   Model complex, non‑linear patterns such as sudden demand spikes or crew fatigue. Adaptable to rapidly changing market dynamics.Forecasts non-linear patterns such as crew fatigue or cargo demand fluctuations.
 - **Example:**
 ```python
 # File: services/forecasting_service/src/LSTM_Model.py
@@ -169,6 +169,16 @@ def build_lstm_model(input_shape):
 - **Fallback:**  
   If real-time retraining isn’t possible, the system falls back to cached LSTM predictions and triggers an automated retraining job.
 
+### Hybrid/Ensemble Models: 
+  - *Purpose:* Combine forecasts from multiple techniques for robust, resilient predictions.
+  - *Usage:* Enhance overall forecast accuracy by mitigating weaknesses of individual models.
+
+### Validation Metrics:
+- **MAPE (Mean Absolute Percentage Error):**  
+  - *Target:* <10% across all models.
+- **KS Statistic (Kolmogorov-Smirnov):**  
+  - *Target:* <0.3 to ensure no significant drift in predictions.
+
 ---
 
 ## 2.3 Drift Detection & Continuous Training
@@ -189,6 +199,12 @@ def check_drift(predictions, actuals):
   The KS-test is used to detect significant differences between the distribution of current predictions and actual values. A KS statistic above 0.3 triggers an automatic retraining job.
 
 ### Continuous Retraining Process
+- **Process:**  
+  - Models are retrained on a scheduled basis using AWS SageMaker pipelines (hourly for high-frequency models; daily for others).
+  - Retraining is automatically triggered by performance degradation detected via statistical tests.
+- **Retraining Trigger:**  
+  - Automated drift detection mechanisms (e.g., KS-test) compare current predictions with actual outcomes.
+
 ```bash
 # File: infrastructure/ci-cd/retrain.sh
 aws sagemaker create-training-job \
@@ -207,7 +223,25 @@ aws sagemaker create-training-job \
 - **Performance Monitoring:**  
   Each model’s performance (e.g., MAPE, RMSE) is tracked in real time. If accuracy drops below 90%, an alert is triggered, and the system automatically serves cached predictions.
 - **Fallback Procedures:**  
-  If any model fails to update, the system defaults to using the previous day’s forecast data until the retraining process is successfully completed.
+  If any model fails to update, the system defaults to using the previous day’s forecast data until the retraining process is successfully completed. If retraining fails or if drift is detected beyond thresholds, the system reverts to a 7‑day moving average forecast. Automated alerts are issued to notify the system of fallback activation for further analysis.
+
+## 2.5 Documentation & Versioning
+- **Parameter Logs:**
+  Every model's configuration, performance metrics, and version history are stored in our internal repository.
+- **Fallback Documentation:**
+  Each model includes detailed fallback procedures that are automatically activated when data quality issues are detected.
+- **Version Control:**
+  Models and parameters are versioned using automated pipelines (e.g., via DVC and S3 versioned buckets) to ensure reproducibility and auditability.
+
+# 2.6. Integration with Downstream Modules
+- **Data Flow:** Forecast outputs are exposed via REST/GraphQL endpoints, integrating directly with the Pricing Engine and Network Optimization modules.
+- **Automated Validation:** Continuous integration tests validate the consistency and accuracy of forecast data before deployment.
+- **Monitoring:** Real-time performance monitoring (via Prometheus and Grafana) ensures that any degradation in forecast accuracy triggers immediate automated fallback actions
+
+# 2.7. Continuous Improvement & Monitoring
+- **Automated Alerts:** Performance metrics (e.g., MAPE, KS statistic) are continuously monitored, with automated alerts generated if targets are not met.
+- **Scheduled Reviews:** Regular Inspect & Adapt sessions (as part of our SAFe Agile PI Planning) ensure that forecasting models and fallback strategies are updated based on operational feedback.
+- **Data Quality Checks:** Automated ETL pipelines and anomaly detection mechanisms ensure high-quality, up-to-date data feeds.
 
 ## Summary
 This forecasting module is designed to ensure consistent, accurate demand predictions through 83 robust models. With continuous retraining, drift detection, and comprehensive fallback strategies, the system maintains a high forecast accuracy, directly contributing to optimized dynamic pricing and network planning.
