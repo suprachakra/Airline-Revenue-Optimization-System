@@ -38,21 +38,50 @@ func FetchFlightData() ([]Flight, error) {
   - **Security:** Ensures OAuth2-based authentication.
 - **Monitoring:** Logs and alerts for token expiration and API errors.
 
-#### 3. Distribution Channels (ATPCO, NDC)
+#### 3. Distribution Channels (e.g.,ATPCO, NDC)
 - **Integration:** RESTful APIs conforming to OpenAPI v3 specifications.
-- **Purpose:** Distribute dynamic offers across multiple channels.
+- **Purpose:** Distribute dynamic offers across multiple channels. Ensure consistent pricing and offer management across reservation and revenue systems.
 - **Error Handling:**  
   - **Data Validation:** Ensures data integrity before transmission.
-  - **Fallback:** Reverts to static fare models if dynamic pricing data is unavailable.
+  - **Fallback:**  If primary feeds (ACARS) are delayed (>15 minutes), automatically switch to alternative feeds (FAA ASDI or historical averages).
 - **Monitoring:** Real-time dashboard displays error rates and fallback activations.
 
-#### 4. External Market Data Providers
+#### 4. External Market Data Providers(e.g., ACARS, FAA ASDI)
 - **Integration:** REST APIs providing competitor pricing and market trends.
 - **Purpose:** Inform dynamic pricing adjustments in real time.
 - **Error Handling:**  
   - **Circuit Breakers:** Isolate failure if market data delays occur.
   - **Fallback:** Uses historical market data to approximate current conditions.
 - **Monitoring:** Automated alerts trigger if data freshness falls below a defined threshold.
+
+### 5. Error Handling & Automated Fallbacks
+#### 5.1 Retry Logic & Circuit Breakers
+- **Description:**  
+  Every external API call incorporates retry logic (exponential backoff) and circuit breakers to prevent cascading failures.
+- **Example:**  
+  - **Dynamic Pricing Engine:** Uses Hystrix configuration to manage geo‑fencing API calls.
+  
+```go
+// File: services/pricing_service/src/DynamicPricingEngine.go
+hystrix.ConfigureCommand("geo-fencing", hystrix.CommandConfig{
+    Timeout: 2000, // 2s timeout
+    MaxConcurrentRequests: 100,
+    ErrorPercentThreshold: 25, // Fallback if errors exceed 25% in 10s
+})
+```
+
+### 5.2 Automated Monitoring & Alerting
+- **Description:**  
+  Integrate with Prometheus, Grafana, and Jaeger for real‑time monitoring.
+- **Fallback:**  
+  - Automated alerts trigger rollback or fallback routines when integration errors or data delays occur.
+---
+
+### 6. Documentation & Compliance
+- **Integration Documentation:**  
+  All API endpoints, protocols, and data schemas are documented in the `common/api/openapi.yaml` and `internal_apis.md`.
+- **Compliance:**  
+  Integration processes adhere to IATA NDC, GDPR, and other regulatory requirements, with automated policy-as-code enforcement.
 
 ## Summary
 Every integration point in IAROS is meticulously designed to handle failures gracefully. Detailed error handling, retry logic, and fallback strategies ensure that even if one system experiences issues, overall operations continue uninterrupted.
