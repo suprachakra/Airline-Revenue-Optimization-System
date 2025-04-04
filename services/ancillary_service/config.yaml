@@ -1,0 +1,31 @@
+# Ancillary Service Configuration v3.1
+server:
+  port: 8082
+  read_timeout: 15s
+  write_timeout: 15s
+  idle_timeout: 60s
+
+ancillary:
+  default_bundle:
+    - id: 1
+      name: "Standard Seat Selection"
+      price: 10.0
+    - id: 2
+      name: "Basic Meal Upgrade"
+      price: 15.0
+  dynamic_parameters:
+    attribute_count: 112
+    personalization_threshold: 0.95
+
+fallback:
+  use_default_bundle: true
+  cache_expiry: "5m"
+
+logging:
+  level: "INFO"
+  format: "json"
+  output: "stdout"
+
+endpoints:
+  offer_service: "http://offer_service:8080"
+  pricing_service: "http://pricing_service:8080"
