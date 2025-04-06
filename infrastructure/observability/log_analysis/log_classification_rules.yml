@@ -1,0 +1,5 @@
+# log_classification_rules.yml
+rules:
+  - name: "PII Redaction"
+    pattern: "(email|user_id)\":\"[^\"]+\""
+    replacement: "$1\":\"[REDACTED]\""
