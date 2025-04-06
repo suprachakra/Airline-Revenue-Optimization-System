@@ -1,0 +1,9 @@
+# max_connections_alert.yaml
+alert:
+  name: "MaxConnectionsExceeded"
+  condition: "avg(pg_stat_activity.count) > 90%"
+  severity: "critical"
+  message: "Connection pool exhaustion detected on PostgreSQL. Immediate action required."
+  actions:
+    - "Notify DBA team via PagerDuty"
+    - "Trigger auto-scale of connection pool"
