@@ -1,0 +1,9 @@
+# internal_resolver_config.yaml
+# Configurations for internal service discovery.
+nameservers:
+  - 10.0.0.2
+  - 10.0.0.3
+search: "iaros.internal"
+options:
+  timeout: 2
+  attempts: 3
