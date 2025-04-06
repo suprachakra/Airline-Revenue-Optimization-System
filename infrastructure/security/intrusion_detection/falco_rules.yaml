@@ -1,0 +1,6 @@
+# falco_rules.yaml - Falco runtime container monitoring rules
+- rule: Unexpected Network Connection
+  desc: Detects outbound connections from containers that are not whitelisted.
+  condition: container.id != host and outbound and not container.name in ("allowed_service")
+  output: "Container {{container.name}} (ID: {{container.id}}) made an unexpected network connection (command: {{proc.cmdline}})"
+  priority: CRITICAL
