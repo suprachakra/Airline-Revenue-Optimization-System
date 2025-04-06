@@ -1,0 +1,8 @@
+# Audit Policies for IAROS
+policies:
+  - operation: "price_override"
+    retention: 365d
+  - operation: "manual_intervention"
+    retention: 365d
+  - operation: "api_access"
+    retention: 180d
