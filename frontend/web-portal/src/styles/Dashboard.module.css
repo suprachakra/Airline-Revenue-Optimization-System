@@ -1,0 +1,15 @@
+/* Scoped Dashboard Component Styles */
+.dashboard {
+  padding: 20px;
+  background-color: #ffffff;
+  border-radius: 4px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+.header {
+  font-size: 1.5em;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+.chartContainer {
+  margin-top: 20px;
+}
