@@ -1,0 +1,24 @@
+{
+  "name": "iaros-mobile-app",
+  "version": "3.0.0",
+  "main": "index.js",
+  "scripts": {
+    "start": "react-native start",
+    "android": "react-native run-android",
+    "ios": "react-native run-ios",
+    "test": "jest"
+  },
+  "dependencies": {
+    "axios": "^0.27.2",
+    "react": "18.2.0",
+    "react-native": "0.70.0",
+    "@react-native-community/netinfo": "^9.3.5",
+    "react-native-ssl-pinning": "^1.5.0",
+    "react-native-encrypted-storage": "^4.0.2",
+    "react-native-fingerprint-scanner": "^6.0.0"
+  },
+  "devDependencies": {
+    "jest": "^28.1.0",
+    "babel-jest": "^28.1.0"
+  }
+}
