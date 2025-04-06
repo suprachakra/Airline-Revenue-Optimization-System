@@ -1,0 +1,40 @@
+# portal-deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: web-portal
+  namespace: iaros-prod
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: web-portal
+  template:
+    metadata:
+      labels:
+        app: web-portal
+    spec:
+      containers:
+      - name: web-portal
+        image: iaros/web-portal:v3.0
+        ports:
+        - containerPort: 80
+        readinessProbe:
+          httpGet:
+            path: /healthcheck
+            port: 80
+          initialDelaySeconds: 5
+          periodSeconds: 5
+        livenessProbe:
+          httpGet:
+            path: /healthcheck
+            port: 80
+          initialDelaySeconds: 15
+          periodSeconds: 10
+        resources:
+          limits:
+            cpu: "500m"
+            memory: "512Mi"
+          requests:
+            cpu: "250m"
+            memory: "256Mi"
