@@ -1,0 +1,19 @@
+{
+  "modes": {
+    "light": {
+      "background": "#ffffff",
+      "text-primary": "#333333",
+      "accent": "#003366"
+    },
+    "dark": {
+      "background": "#121212",
+      "text-primary": "#e6e6e6",
+      "accent": "#80bfff"
+    }
+  },
+  "compliance": {
+    "wcag": "2.1 AA",
+    "last_audit": "2025-04-01",
+    "contrast_checks": true
+  }
+}
