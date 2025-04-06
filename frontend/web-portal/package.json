@@ -1,0 +1,36 @@
+{
+  "name": "iaros-web-portal",
+  "version": "3.0.0",
+  "description": "IAROS Web Portal for airline revenue analytics and dynamic dashboards.",
+  "main": "index.js",
+  "scripts": {
+    "start": "webpack-dev-server --mode development",
+    "build": "webpack --mode production",
+    "test": "jest",
+    "audit:a11y": "jest-axe --config ./a11y-test.config.js",
+    "test:visual": "reg-suit compare",
+    "test:chaos": "chaos-js simulate network_failure"
+  },
+  "dependencies": {
+    "axios": "^0.27.2",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-router-dom": "^6.3.0",
+    "@mui/material": "^5.10.0"
+  },
+  "devDependencies": {
+    "webpack": "^5.74.0",
+    "webpack-cli": "^4.10.0",
+    "webpack-dev-server": "^4.11.1",
+    "babel-loader": "^8.2.5",
+    "jest": "^28.1.0",
+    "jest-axe": "^7.0.0",
+    "reg-suit": "^3.0.0",
+    "chaos-js": "^1.0.0",
+    "responsive-loader": "^1.5.0",
+    "sharp": "^0.30.7",
+    "style-loader": "^3.3.1",
+    "css-loader": "^6.7.1",
+    "webpack-subresource-integrity": "^5.0.0"
+  }
+}
