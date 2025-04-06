@@ -5,6 +5,10 @@ This module implements a dynamic pricing engine for 142 scenarios. It integrates
 - **Dynamic Pricing Algorithms:** Implements multiple pricing scenarios.
 - **Integration with Forecasting:** Adjusts fares based on predictive data.
 - **Fallback Architecture:** 4‑layer cascading failover (live pricing, geo‑cache, historical moving average, static floor pricing).
+  - Live pricing computation.
+  - Geo‑distributed cache fallback.
+  - Historical 7‑day moving average.
+  - Static floor pricing based on IATA minimum guidelines.
 - **Compliance:** ATPCO Rule 245, IATA NDC Level 4, GDPR Art.35 ensured.
 - **Scenario Coverage:** 142 dynamic pricing scenarios plus 23 additional edge cases.
 
