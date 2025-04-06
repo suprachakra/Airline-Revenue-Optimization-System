@@ -1,0 +1,28 @@
+// Jenkinsfile - Jenkins pipeline definition for IAROS
+pipeline {
+  agent any
+  stages {
+    stage('Build') {
+      steps {
+        sh 'docker-compose build'
+      }
+    }
+    stage('Test') {
+      steps {
+        sh './run_tests.sh'
+      }
+    }
+    stage('Deploy') {
+      steps {
+        sh './k8s-deploy.sh'
+      }
+    }
+  }
+  post {
+    failure {
+      mail to: 'sre-team@iaros.ai',
+           subject: "Jenkins Pipeline Failed: ${env.JOB_NAME}",
+           body: "Please review the Jenkins logs for details."
+    }
+  }
+}
