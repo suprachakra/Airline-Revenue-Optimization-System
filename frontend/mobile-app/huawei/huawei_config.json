@@ -1,0 +1,8 @@
+{
+  "apiEndpoint": "https://api.iaros-huawei.io/v3",
+  "theme": "light",
+  "fallback": {
+    "cacheTTL": 4320,
+    "networkRetry": 3
+  }
+}
