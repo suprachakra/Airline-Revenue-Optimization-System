@@ -14,3 +14,6 @@ graph TD
     B -- Miss --> D[Calculate Historical Average]
     D -- Failure --> E[Apply Static Floor Pricing]
 ```
+### Risk Mitigation
+- Automated alerts and logging when each fallback layer is triggered.
+- Continuous improvement cycles to update fallback thresholds.
