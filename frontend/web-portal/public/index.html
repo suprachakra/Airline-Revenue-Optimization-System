@@ -1,17 +1,53 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="IAROS Web Portal for Airline Revenue Analytics">
-  <link rel="manifest" href="manifest.json">
-  <link rel="icon" href="favicon.ico">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="IAROS Web Portal - Real-time dynamic pricing, forecasting, and ancillary revenue analytics." />
   <title>IAROS Web Portal</title>
-  <!-- Inline critical CSS can be injected here for above-the-fold content -->
+
+  <!-- Google Analytics Integration -->
+  <!-- Replace YOUR_GA_ID with the actual GA tracking ID -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=YOUR_GA_ID"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){ dataLayer.push(arguments); }
+    gtag('js', new Date());
+    gtag('config', 'YOUR_GA_ID', { 'send_page_view': true });
+  </script>
+
+  <!-- Zenztech Analytics Integration -->
+  <!-- Replace YOUR_ZENZTECH_KEY with the actual Zenztech key -->
+  <script async src="https://cdn.zenztech.com/zenztech.js"></script>
+  <script>
+    // Initialize Zenztech analytics with the provided key and configuration.
+    zenztech('init', { key: 'YOUR_ZENZTECH_KEY', environment: 'production' });
+  </script>
+
+  <!-- Additional meta tags, CSS links, etc. -->
+  <link rel="stylesheet" href="/styles/main.css" />
 </head>
 <body>
-  <noscript>Please enable JavaScript to view the IAROS Web Portal.</noscript>
   <div id="root"></div>
-  <script src="service-worker.js"></script>
+  
+  <!-- Offline fallback content if needed -->
+  <noscript>
+    <strong>We're sorry but IAROS Web Portal doesn't work properly without JavaScript enabled.</strong>
+  </noscript>
+  
+  <!-- Service Worker Registration -->
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/service-worker.js')
+          .then(registration => {
+            console.log('ServiceWorker registration successful with scope: ', registration.scope);
+          })
+          .catch(error => {
+            console.error('ServiceWorker registration failed: ', error);
+          });
+      });
+    }
+  </script>
 </body>
 </html>
