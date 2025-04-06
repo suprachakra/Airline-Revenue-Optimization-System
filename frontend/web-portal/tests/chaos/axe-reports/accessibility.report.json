@@ -1,0 +1,11 @@
+{
+  "url": "http://localhost:3000",
+  "violations": [
+    {
+      "id": "color-contrast",
+      "description": "Ensures sufficient contrast between text and background colors.",
+      "impact": "serious",
+      "nodes": []
+    }
+  ]
+}
