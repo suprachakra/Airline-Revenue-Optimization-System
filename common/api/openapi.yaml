@@ -1,0 +1,25 @@
+openapi: 3.0.0
+info:
+  title: IAROS Public API
+  version: 1.0.0
+  description: >
+    This API exposes the public endpoints of IAROS. It includes comprehensive security definitions and adheres to the highest standards (e.g., OAuth2, JWT).
+servers:
+  - url: https://api.iaros.ai/v1
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+paths:
+  /pricing:
+    get:
+      summary: Retrieve dynamic pricing data
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Pricing data retrieved successfully.
+        '401':
+          description: Unauthorized
