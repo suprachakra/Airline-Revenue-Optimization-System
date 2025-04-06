@@ -1,0 +1,20 @@
+{
+  "scenarios": [
+    {
+      "name": "Total API Outage",
+      "actions": [
+        {"type": "terminate_service", "service": "api_gateway"},
+        {"type": "simulate_latency", "duration": "60s"}
+      ],
+      "expected": ["activate_fallback", "log_incident"]
+    },
+    {
+      "name": "Database Connection Exhaustion",
+      "actions": [
+        {"type": "block_connections", "service": "database"},
+        {"type": "simulate_failure", "target": "pgbouncer"}
+      ],
+      "expected": ["trigger_alert", "fallback_to_backup"]
+    }
+  ]
+}
