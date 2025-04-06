@@ -1,0 +1,14 @@
+# portal-service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: web-portal
+  namespace: iaros-prod
+spec:
+  type: LoadBalancer
+  selector:
+    app: web-portal
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 80
