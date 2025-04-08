@@ -78,7 +78,7 @@ This isn't just a project. It's a **platform of platforms**—each module is a s
 
 ---
 
-### 6. Folder Map & Who Should Read What
+### 6. Repository Structure & Stakeholder Guide
 
 | Role             | Recommended Starting Points                          |
 |------------------|-------------------------------------------------------|
@@ -90,6 +90,7 @@ This isn't just a project. It's a **platform of platforms**—each module is a s
 | Designer         | `brand_design_marketing/UI_UX_Flows.md`, `design_tokens.json` |
 | Contributor      | `CONTRIBUTING.md`, `common/`, `README.md`            |
 
+### Directory Snapshot
 ```bash
 ├── business_strategy/       # Strategic docs (OKRs, Competitive Benchmarking, Roadmaps)
 ├── technical_blueprint/     # Architecture, data flow diagrams, and service design
@@ -123,4 +124,4 @@ bash scripts/run_tests.sh
 ```
 Each service also includes its own README.md, config files, and test suite.
 
-
+*IAROS is a living, composite product portfolio—where each module not only drives revenue but also intelligently manages costs. It is built for modern airlines seeking to excel in a competitive, data-driven market.*
