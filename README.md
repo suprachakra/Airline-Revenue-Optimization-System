@@ -56,6 +56,64 @@ This isn't just a project. It's a **platform of platforms**—each module is a s
 - Feeds cost signals to pricing/forecasting modules  
 - Integrated with vendor KPIs and invoice reconciliation
 
+```mermaid
+flowchart TD
+ subgraph Core_Services["**Core Services**"]
+        DPS["Dynamic Pricing Service<br>Calculates optimal fares using ML models &amp; business rules"]
+        FS["Forecasting Service<br>Predicts future demand &amp; load factors"]
+        AMS["Ancillary &amp; Merchandising Service<br>Manages ancillaries &amp; creates bundle offers"]
+        OMS["Offer Management Service<br>Assembles complete offers by integrating pricing &amp; ancillary data"]
+        P2P["Procure-to-Pay Service<br>Streamlines procurement workflows with integrated vendor management &amp; cost intelligence"]
+  end
+ subgraph External_Integrations["**External Integrations**"]
+        PSS["PSS Integration Service<br>Interfaces with Amadeus PSS for inventory &amp; fare updates"]
+        PROS["PROS O&amp;D Integration Service<br>Retrieves demand forecasts &amp; optimization inputs"]
+        NPS["Network Planning &amp; Codeshare Service<br>Syncs schedule changes &amp; partner flight data"]
+        PCS["Promotion &amp; Campaign Service<br>Manages marketing promotions &amp; fare sale campaigns"]
+        EIS["ERP Integration Service<br>Connects with SAP Ariba &amp; SAP S/4HANA for financial data synchronization"]
+  end
+    FS --> DPS
+    DPS --> OMS
+    AMS --> OMS
+    P2P --> DPS & FS & AMS
+    PSS --> DPS
+    PROS --> FS
+    NPS --> OMS
+    PCS --> OMS
+    EIS --> P2P
+    UMS["User Management Service<br>Secure authentication, role-based access, user profiles"] -- Authenticates &amp; manages users --> Core_Services
+    FE["Front-end Applications<br>Web portal &amp; Mobile App for real-time metrics &amp; alerts"] -- Consumes APIs --> UMS & Core_Services
+    CL["Common Libraries<br>Shared models, utilities, and API definitions"] -- Provides shared models and utilities --> Core_Services & UMS
+    INF["Infrastructure<br>Provisioned via Terraform, deployed to Kubernetes, CI/CD pipelines, centralized logging, monitoring, tracing"] -- Hosts &amp; manages --> Core_Services & External_Integrations & FE & UMS
+
+     DPS:::VanGoghYellow
+     FS:::VanGoghYellow
+     AMS:::VanGoghYellow
+     OMS:::VanGoghYellow
+     P2P:::VanGoghYellow
+     PSS:::DegasGreen
+     PROS:::DegasGreen
+     NPS:::DegasGreen
+     PCS:::DegasGreen
+     EIS:::DegasGreen
+     UMS:::Aqua
+     FE:::Rose
+     CL:::Peach
+     INF:::MonetBlue
+    classDef PicassoBlue stroke-width:1px, stroke-dasharray:none, stroke:#5A84A2, fill:#CDE0F2, color:#2D4661  
+    classDef CezannePeach stroke-width:1px, stroke-dasharray:none, stroke:#E2A07D, fill:#FBE7DA, color:#6D4532
+    classDef Pine stroke-width:1px, stroke-dasharray:none, stroke:#254336, fill:#27654A, color:#FFFFFF
+    classDef TurnerMist stroke-width:1px, stroke-dasharray:none, stroke:#B8C4D1, fill:#EAF2F8, color:#4A5B6F
+    classDef DegasGreen stroke-width:1px, stroke-dasharray:none, stroke:#A7C796, fill:#E6F4E2, color:#3E6A42
+    classDef VanGoghYellow stroke-width:1px, stroke-dasharray:none, stroke:#E3B448, fill:#FDF6C9, color:#7D5A17
+    classDef MonetBlue stroke-width:1px, stroke-dasharray:none, stroke:#87AFC7, fill:#D4EAF7, color:#30577B
+    classDef Rose stroke-width:1px, stroke-dasharray:none, stroke:#FF5978, fill:#FFDFE5, color:#8E2236
+    classDef Peach stroke-width:1px, stroke-dasharray:none, stroke:#FBB35A, fill:#FFEFDB, color:#8F632D
+    classDef Aqua stroke-width:1px, stroke-dasharray:none, stroke:#46EDC8, fill:#DEFFF8, color:#378E7A
+    style Core_Services fill:transparent
+    style External_Integrations fill:transparent
+
+```
 ---
 
 ### 4. Architecture at a Glance
