@@ -1,27 +1,35 @@
 ## Executive Summary
 The Airline Revenue Optimization System (IAROS) is an integrated portfolio designed to revolutionize airline revenue management. By unifying dynamic pricing, ancillary services, forecasting models, network planning, and offer management, IAROS delivers a comprehensive solution that is both adaptive and resilient.
-IAROS is a portfolio of interdependent, specialized modules that together drive revenue uplift, reduce manual interventions, and enhance customer experience. With a scalable, cloud‑native architecture and robust risk mitigation at every level, IAROS sets a new standard for airline revenue optimization.
+
+**Complete Airline Retailing Platform**  
+Building on our proven revenue optimization foundation, IAROS is evolving into a complete airline retailing platform that includes **Offer, Order, and Distribution (OOD)** capabilities. This transformation extends our backend intelligence to deliver direct customer-facing booking experiences while maintaining our core revenue optimization strengths.
+
+IAROS is a portfolio of interdependent, specialized modules that together drive revenue uplift, reduce manual interventions, and enhance customer experience. With a scalable, cloud‑native architecture and robust risk mitigation at every level, IAROS sets a new standard for airline revenue optimization **and modern airline retailing**.
 
 ### Problem Statement
-Airlines today face significant revenue leakage due to fragmented IT systems, static fare models, and a lack of real‑time integration between pricing, ancillary services, forecasting, and network planning. Traditional solutions struggle to adapt to rapidly changing market conditions and customer demands, leaving billions of dollars untapped.
+Airlines today face significant revenue leakage due to fragmented IT systems, static fare models, and a lack of real‑time integration between pricing, ancillary services, forecasting, and network planning. Traditional solutions struggle to adapt to rapidly changing market conditions and customer demands, leaving billions of dollars untapped. Also **extending Challenge - The Retailing Gap:** beyond internal revenue optimization, airlines lack modern customer-facing retailing capabilities. They cannot create personalized offers, manage complete customer order lifecycles, or distribute content effectively across multiple channels. This results in poor customer experience, reduced ancillary revenue, and dependence on third-party platforms.
 
 ### Mission & Vision
 
 **Mission:**  
-To revolutionize airline revenue management by delivering a fully integrated, AI-driven portfolio that optimizes dynamic pricing, ancillary services, and network planning—resulting in maximized revenue and enhanced customer experience.
+To revolutionize airline revenue management by delivering a fully integrated, AI-driven portfolio that optimizes dynamic pricing, ancillary services, and network planning—**extended with complete offer, order, and distribution capabilities**—resulting in maximized revenue and enhanced customer experience.
 
 **Vision:**  
-To become the global standard for airline revenue optimization, enabling carriers to achieve real‑time decision-making, operational excellence, and sustained competitive advantage in a rapidly evolving market.
+To become the global standard for airline revenue optimization **and modern airline retailing**, enabling carriers to achieve real‑time decision-making, operational excellence, and sustained competitive advantage in a rapidly evolving market.
 
 ### Strategic Imperatives
 
 | **Imperative**                | **Description**                                                                                 |
 |-------------------------------|-------------------------------------------------------------------------------------------------|
-| **Integrated Data Ecosystem** | Create a unified platform that consolidates data from PSS, CRM, and NDC systems into a single source of truth. |
-| **Real-Time Adaptability**    | Implement dynamic pricing and forecasting models that respond in real time to market and operational changes. |
-| **Enhanced Ancillary Bundling** | Leverage AI and personalized algorithms to maximize ancillary revenue through dynamic, custom bundles. |
-| **Operational Efficiency**    | Streamline network planning and inventory management with automated, data‑driven decision-making. |
+| **Integrated Data Ecosystem** | Create a unified platform that consolidates data from **PSS, CRM, and NDC** systems into a single source of truth. |
+| **Real-Time Adaptability**    | Implement **dynamic pricing** and **forecasting models** that respond in real time to market and operational changes. |
+| **Ancillary Bundling** | Leverage **AI and personalized algorithms** to maximize ancillary revenue through dynamic, custom bundles. |
+| **Operational Efficiency**    | Streamline **network planning** and **inventory management** with automated, data‑driven decision-making. |
 | **Compliance & Security**     | Ensure full regulatory compliance (IATA NDC Level 4, GDPR, etc.) and robust security across all modules. |
+| **Complete Customer Journey** | Extend from backend optimization to complete customer-facing booking and order management. |
+| **NDC Level 4 Compliance** | Achieve full New **Distribution Capability** compliance for modern airline retailing. |
+| **Personalized Offer Creation** | Deliver individualized offers using our existing **83 AI models and 142 pricing scenarios**. |
+| **Multi-Channel Distribution** | Distribute personalized content across **GDS, OTA, and direct channels** with full control. |
 
 ### Long-Term Objectives
 - Achieve a 5–7% overall revenue uplift and 23% ancillary revenue lift.
@@ -67,5 +75,5 @@ To become the global standard for airline revenue optimization, enabling carrier
 
 
 ## Strategic Impact:
-IAROS is not a single monolithic project—it’s a portfolio of interdependent, specialized modules that together drive revenue uplift, reduce manual interventions, and enhance customer experience. With a scalable, cloud‑native architecture and robust risk mitigation at every level, IAROS sets a new standard for airline revenue optimization.
+IAROS is not a single monolithic project—it's a portfolio of interdependent, specialized modules that together drive revenue uplift, reduce manual interventions, and enhance customer experience. With a scalable, cloud‑native architecture and robust risk mitigation at every level, IAROS sets a new standard for airline revenue optimization.
 
