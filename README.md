@@ -7,7 +7,7 @@ This isn't just a project. It's a **platform of platforms**—each module is a s
 
 ### 1. Executive Snapshot
 
-- **IAROS = Revenue Generation + Cost Efficiency + Real-time Optimization**
+- **IAROS = Revenue Generation + Cost Efficiency + Real-time Optimization + OOD capabilities**
 - Designed for **dynamic pricing, forecasting, network planning, ancillary bundling, offer management**, and **procure-to-pay operations**
 - Built as **independent modules** with plug-and-play interoperability
 - Engineered to scale across **global airline operations**, NDC channels, and legacy systems
