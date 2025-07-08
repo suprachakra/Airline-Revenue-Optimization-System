@@ -1,7 +1,7 @@
 ## IAROS: Integrated Airline Revenue Optimization System
 
 **IAROS** is a modular, enterprise-grade product portfolio that helps airlines optimize their full revenue lifecycle—dynamically, scalably, and cost-efficiently.  
-This isn't just a project. It's a **platform of platforms**—each module is a standalone product, working together as part of a composite system for airline profitability.
+This isn't just a project. It's a **platform of platforms**—each module is a standalone product, working together as part of a composite system for airline profitability
 
 ---
 
