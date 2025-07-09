@@ -128,7 +128,7 @@ flowchart TD
 
 ### 5. Cross-Cutting Capabilities
 
-- **Security & Auth**: OAuth2, JWT, role-based access across services
+- **Security & Auth**: OAuth2, JWT,role-based access across services
 - **Resilience**: Circuit breakers, caching, graceful degradation paths
 - **Fallback Logic**: Across pricing, offers, forecasting, P2P
 - **Governance**: Config versioning, audit logs, standardized model validation
