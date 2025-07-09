@@ -1,0 +1,67 @@
+server:
+  port: 8080
+  host: "0.0.0.0"
+  read_timeout: 30
+  write_timeout: 30
+  idle_timeout: 120
+
+database:
+  host: "localhost"
+  port: 5432
+  user: "postgres"
+  password: "postgres"
+  dbname: "distribution_service"
+  sslmode: "disable"
+  timezone: "UTC"
+
+redis:
+  host: "localhost"
+  port: 6379
+  password: ""
+  db: 0
+
+services:
+  order_service_url: "http://localhost:8082"
+  offer_service_url: "http://localhost:8083"
+  
+  ndc:
+    version: "20.3"
+    default_airline: "AA"
+    session_timeout: 14400  # 4 hours
+    max_concurrency: 100
+  
+  gds:
+    amadeus:
+      enabled: true
+      base_url: "https://test.api.amadeus.com/v2"
+      username: "${AMADEUS_USERNAME}"
+      password: "${AMADEUS_PASSWORD}"
+      pseudo_city: "NYC1S2195"
+      office_id: "NYC1S2195"
+      timeout: 30
+      retry_count: 3
+    
+    sabre:
+      enabled: true
+      base_url: "https://api.test.sabre.com/v2"
+      username: "${SABRE_USERNAME}"
+      password: "${SABRE_PASSWORD}"
+      pseudo_city: "F9FN"
+      office_id: "F9FN"
+      timeout: 30
+      retry_count: 3
+    
+    travelport:
+      enabled: true
+      base_url: "https://api.travelport.com/v1"
+      username: "${TRAVELPORT_USERNAME}"
+      password: "${TRAVELPORT_PASSWORD}"
+      pseudo_city: "P7077C"
+      office_id: "P7077C"
+      timeout: 30
+      retry_count: 3
+
+logging:
+  level: "info"
+  format: "json"
+  output_path: "stdout" 

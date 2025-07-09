@@ -1,0 +1,310 @@
+# IAROS Ancillary Service Configuration
+# Intelligent Ancillary Revenue Optimization Service
+
+service:
+  name: "ancillary-service"
+  version: "1.0.0"
+  description: "AI-powered ancillary revenue optimization and bundling engine"
+  port: 8080
+  host: "0.0.0.0"
+  
+# Server Configuration
+server:
+  read_timeout: 15s
+  write_timeout: 15s
+  idle_timeout: 60s
+  max_connections: 1000
+  request_timeout: 30s
+  
+# Database Configuration
+database:
+  type: "mongodb"
+  host: "localhost"
+  port: 27017
+  name: "ancillary_db"
+  username: "ancillary_user"
+  password: "ancillary_password"
+  connection_pool_size: 20
+  connection_timeout: 10s
+  
+# Cache Configuration
+cache:
+  type: "redis"
+  host: "localhost"
+  port: 6379
+  database: 0
+  password: ""
+  max_connections: 50
+  default_ttl: 3600 # 1 hour
+  
+# Bundling Engine Configuration
+bundling_engine:
+  enabled: true
+  max_items_per_bundle: 6
+  min_items_per_bundle: 2
+  default_discount_percentage: 10
+  max_discount_percentage: 25
+  ai_model:
+    enabled: true
+    confidence_threshold: 0.7
+    learning_rate: 0.001
+    max_iterations: 1000
+    
+# Analytics Configuration
+analytics:
+  enabled: true
+  real_time_updates: true
+  batch_processing: true
+  retention_days: 365
+  aggregation_interval: 5m
+  
+# Pricing Configuration
+pricing:
+  dynamic_pricing: true
+  price_elasticity_enabled: true
+  seasonal_adjustments: true
+  competitor_monitoring: true
+  update_frequency: 15m
+  
+# Customer Segmentation
+customer_segmentation:
+  enabled: true
+  segments:
+    - name: "Business Elite"
+      criteria:
+        - tier: ["Platinum", "Diamond"]
+        - booking_class: ["Business", "First"]
+      discount_multiplier: 1.0
+      
+    - name: "Family Traveler"
+      criteria:
+        - companion_count: ">= 2"
+        - trip_type: "leisure"
+      discount_multiplier: 1.05
+      
+    - name: "Frequent Flyer"
+      criteria:
+        - travel_frequency: "frequent"
+        - tier: ["Gold", "Platinum", "Diamond"]
+      discount_multiplier: 1.02
+      
+    - name: "Budget Conscious"
+      criteria:
+        - price_sensitivity: "high"
+        - booking_class: "Economy"
+      discount_multiplier: 1.10
+      
+    - name: "Leisure Traveler"
+      criteria:
+        - trip_type: "leisure"
+        - travel_frequency: ["occasional", "infrequent"]
+      discount_multiplier: 1.03
+
+# Ancillary Categories
+ancillary_categories:
+  - name: "baggage"
+    display_name: "Baggage Services"
+    enabled: true
+    weight: 0.8
+    
+  - name: "connectivity"
+    display_name: "Connectivity & WiFi"
+    enabled: true
+    weight: 0.9
+    
+  - name: "comfort"
+    display_name: "Comfort & Seating"
+    enabled: true
+    weight: 0.8
+    
+  - name: "dining"
+    display_name: "Dining & Meals"
+    enabled: true
+    weight: 0.6
+    
+  - name: "convenience"
+    display_name: "Convenience Services"
+    enabled: true
+    weight: 0.7
+    
+  - name: "protection"
+    display_name: "Travel Protection"
+    enabled: true
+    weight: 0.4
+    
+  - name: "entertainment"
+    display_name: "Entertainment"
+    enabled: true
+    weight: 0.5
+    
+  - name: "ground_service"
+    display_name: "Ground Services"
+    enabled: true
+    weight: 0.6
+
+# Route Configuration
+routes:
+  - route: "NYC-LON"
+    multiplier: 1.2
+    popular_categories: ["comfort", "connectivity", "ground_service"]
+    
+  - route: "LAX-TOK"
+    multiplier: 1.3
+    popular_categories: ["baggage", "dining", "connectivity"]
+    
+  - route: "SFO-FRA"
+    multiplier: 1.1
+    popular_categories: ["comfort", "convenience", "connectivity"]
+    
+  - route: "MIA-MAD"
+    multiplier: 1.0
+    popular_categories: ["dining", "entertainment", "baggage"]
+
+# API Configuration
+api:
+  version: "v1"
+  rate_limiting:
+    enabled: true
+    requests_per_minute: 100
+    burst_size: 10
+    
+  authentication:
+    enabled: true
+    method: "api_key"
+    required_for_endpoints: ["POST", "PUT", "DELETE"]
+    
+  cors:
+    enabled: true
+    allowed_origins: ["*"]
+    allowed_methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"]
+    allowed_headers: ["Content-Type", "Authorization", "X-API-Key"]
+
+# Logging Configuration
+logging:
+  level: "info"
+  format: "json"
+  output: "stdout"
+  include_caller: true
+  log_requests: true
+  log_responses: false
+  
+# Monitoring Configuration
+monitoring:
+  enabled: true
+  metrics:
+    enabled: true
+    endpoint: "/metrics"
+    
+  health_check:
+    enabled: true
+    endpoint: "/health"
+    interval: 30s
+    
+  tracing:
+    enabled: true
+    service_name: "ancillary-service"
+    
+# Business Rules
+business_rules:
+  bundle_generation:
+    min_confidence_score: 0.6
+    max_bundles_per_request: 10
+    exclude_conflicting_items: true
+    
+  pricing_rules:
+    min_price: 5.0
+    max_price: 500.0
+    currency: "USD"
+    tax_rate: 0.15
+    
+  purchase_rules:
+    max_items_per_purchase: 10
+    refund_window_hours: 24
+    
+# Machine Learning Configuration
+ml_config:
+  model_training:
+    enabled: true
+    training_interval: "daily"
+    min_training_samples: 1000
+    
+  recommendation_engine:
+    algorithm: "collaborative_filtering"
+    similarity_threshold: 0.7
+    max_recommendations: 8
+    
+  forecasting:
+    enabled: true
+    horizon_days: 30
+    update_frequency: "hourly"
+
+# Performance Configuration
+performance:
+  cache_strategies:
+    recommendations: 1h
+    items: 4h
+    bundles: 2h
+    analytics: 30m
+    
+  connection_pools:
+    database: 20
+    cache: 10
+    
+  timeouts:
+    database: 5s
+    cache: 1s
+    external_apis: 10s
+
+# Security Configuration
+security:
+  encryption:
+    enabled: true
+    algorithm: "AES-256"
+    
+  data_protection:
+    enabled: true
+    anonymize_pii: true
+    retention_policy: "365d"
+    
+  api_security:
+    rate_limiting: true
+    input_validation: true
+    output_sanitization: true
+
+# Feature Flags
+feature_flags:
+  ai_bundling: true
+  dynamic_pricing: true
+  real_time_analytics: true
+  customer_segmentation: true
+  seasonal_adjustments: true
+  competitor_monitoring: false
+  a_b_testing: true
+  
+# Environment Configuration
+environment:
+  name: "development"
+  debug: true
+  profiling: false
+  
+# Integration Configuration
+integrations:
+  pricing_service:
+    enabled: true
+    endpoint: "http://pricing-service:8080"
+    timeout: 5s
+    
+  forecasting_service:
+    enabled: true
+    endpoint: "http://forecasting-service:8080"
+    timeout: 10s
+    
+  customer_service:
+    enabled: true
+    endpoint: "http://user-management-service:8080"
+    timeout: 5s
+    
+  analytics_service:
+    enabled: true
+    endpoint: "http://analytics-service:8080"
+    timeout: 5s

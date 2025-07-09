@@ -1,0 +1,88 @@
+server:
+  port: "8080"
+  environment: "development"
+  read_timeout: "30s"
+  write_timeout: "30s"
+  idle_timeout: "60s"
+
+database:
+  host: "localhost"
+  port: "5432"
+  username: "postgres"
+  password: "password"
+  database: "iaros_orders"
+  ssl_mode: "disable"
+  max_connections: 25
+  max_idle_connections: 5
+  connection_max_lifetime: "300s"
+
+redis:
+  url: "redis://localhost:6379"
+  password: ""
+  database: 0
+  max_retries: 3
+  min_retry_backoff: "8ms"
+  max_retry_backoff: "512ms"
+  dial_timeout: "5s"
+  read_timeout: "3s"
+  write_timeout: "3s"
+  pool_size: 10
+  min_idle_connections: 2
+
+logging:
+  level: "info"
+  format: "json"
+  output: "stdout"
+
+features:
+  enable_swagger: true
+  enable_metrics: true
+  enable_cache: true
+  enable_audit_trail: true
+
+external_services:
+  offer_service:
+    url: "http://localhost:8081"
+    timeout: "10s"
+    max_retries: 3
+  
+  payment_service:
+    url: "http://localhost:8082"
+    timeout: "15s"
+    max_retries: 3
+  
+  notification_service:
+    url: "http://localhost:8083"
+    timeout: "5s"
+    max_retries: 2
+
+business_rules:
+  order_expiry_hours: 24
+  max_order_items: 50
+  max_passengers_per_order: 20
+  default_currency: "USD"
+  supported_currencies: ["USD", "EUR", "GBP", "AED", "SGD", "JPY", "CAD", "AUD"]
+  
+  payment:
+    timeout_seconds: 30
+    max_amount: 50000.00
+    min_amount: 1.00
+  
+  modification:
+    allow_modification_statuses: ["CREATED", "CONFIRMED"]
+    modification_deadline_hours: 2
+  
+  cancellation:
+    allow_cancellation_statuses: ["CREATED", "CONFIRMED", "TICKETED"]
+    cancellation_fee_percentage: 0.10
+    free_cancellation_hours: 24
+  
+  refund:
+    allow_refund_statuses: ["CANCELLED", "TICKETED", "FULFILLED"]
+    refund_processing_days: 7
+    partial_refund_minimum: 10.00
+
+monitoring:
+  health_check_interval: "30s"
+  metrics_port: "9090"
+  enable_detailed_metrics: true 
