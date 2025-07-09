@@ -1,0 +1,221 @@
+server:
+  port: "8090"
+  environment: "development"
+  read_timeout: "30s"
+  write_timeout: "30s"
+  idle_timeout: "60s"
+
+database:
+  host: "localhost"
+  port: "5432"
+  username: "postgres"
+  password: "password"
+  database: "iaros_ood_orchestration"
+  ssl_mode: "disable"
+  max_connections: 30
+  max_idle_connections: 10
+  connection_max_lifetime: "300s"
+
+redis:
+  url: "redis://localhost:6379"
+  password: ""
+  database: 2
+  max_retries: 3
+  min_retry_backoff: "8ms"
+  max_retry_backoff: "512ms"
+  dial_timeout: "5s"
+  read_timeout: "3s"
+  write_timeout: "3s"
+  pool_size: 15
+  min_idle_connections: 5
+
+logging:
+  level: "info"
+  format: "json"
+  output: "stdout"
+
+# OOD Service Dependencies
+external_services:
+  offer_management_engine:
+    url: "http://localhost:8080"
+    timeout: "5s"
+    max_retries: 3
+    health_endpoint: "/health"
+  
+  order_processing_platform:
+    url: "http://localhost:8081"
+    timeout: "10s"
+    max_retries: 3
+    health_endpoint: "/health"
+  
+  order_service:
+    url: "http://localhost:8082"
+    timeout: "8s"
+    max_retries: 3
+    health_endpoint: "/health"
+  
+  distribution_service:
+    url: "http://localhost:8083"
+    timeout: "3s"
+    max_retries: 3
+    health_endpoint: "/health"
+  
+  customer_intelligence_platform:
+    url: "http://localhost:8084"
+    timeout: "2s"
+    max_retries: 3
+    health_endpoint: "/health"
+  
+  pricing_service:
+    url: "http://localhost:8085"
+    timeout: "1s"
+    max_retries: 3
+    health_endpoint: "/health"
+  
+  user_management_service:
+    url: "http://localhost:8086"
+    timeout: "2s"
+    max_retries: 3
+    health_endpoint: "/health"
+
+# Journey Management Configuration
+journey:
+  default_timeout_minutes: 30
+  max_journey_duration_hours: 24
+  state_persistence_interval: "30s"
+  cleanup_expired_journeys_interval: "1h"
+  max_concurrent_journeys_per_customer: 5
+  
+  shopping:
+    search_timeout_seconds: 10
+    offer_cache_ttl_minutes: 5
+    max_offers_per_search: 50
+    personalization_timeout_ms: 500
+  
+  booking:
+    payment_timeout_seconds: 120
+    order_creation_timeout_seconds: 30
+    modification_timeout_seconds: 60
+    cancellation_timeout_seconds: 45
+
+# Compliance Configuration
+compliance:
+  iata_one_order:
+    enabled: true
+    validation_strict: true
+    audit_trail_required: true
+    version: "21.3"
+  
+  ndc:
+    level: 4
+    version: "21.3"
+    validation_enabled: true
+    message_validation_timeout_ms: 100
+    schema_validation_strict: true
+  
+  regulatory:
+    gdpr_compliance: true
+    pci_dss_level: 1
+    data_retention_days: 2555  # 7 years
+    audit_log_retention_days: 2920  # 8 years
+
+# Analytics Configuration
+analytics:
+  enable_real_time: true
+  enable_funnel_tracking: true
+  enable_behavioral_analytics: true
+  enable_ab_testing: true
+  
+  data_collection:
+    sampling_rate: 1.0  # Collect 100% of journey data
+    batch_size: 1000
+    flush_interval: "5s"
+    max_queue_size: 10000
+  
+  performance_tracking:
+    track_service_latencies: true
+    track_step_durations: true
+    track_conversion_rates: true
+    track_abandonment_points: true
+
+# Business Rules
+business_rules:
+  journey_expiry:
+    shopping_session_minutes: 30
+    booking_session_minutes: 60
+    payment_session_minutes: 15
+    modification_window_hours: 24
+  
+  validation:
+    require_customer_authentication: true
+    validate_inventory_real_time: true
+    validate_pricing_real_time: true
+    validate_offers_before_booking: true
+  
+  optimization:
+    enable_cross_sell_recommendations: true
+    enable_dynamic_bundling: true
+    enable_personalization: true
+    enable_real_time_pricing: true
+
+# Security Configuration
+security:
+  jwt:
+    secret_key: "${JWT_SECRET_KEY}"
+    expiry_hours: 24
+    refresh_expiry_hours: 168  # 7 days
+  
+  oauth2:
+    client_id: "${OAUTH2_CLIENT_ID}"
+    client_secret: "${OAUTH2_CLIENT_SECRET}"
+    scopes: ["journey:read", "journey:write", "analytics:read"]
+  
+  encryption:
+    enable_journey_data_encryption: true
+    encryption_algorithm: "AES-256-GCM"
+    key_rotation_days: 90
+  
+  rate_limiting:
+    requests_per_minute: 1000
+    burst_size: 100
+    enable_ip_whitelisting: true
+
+# Monitoring Configuration
+monitoring:
+  health_check_interval: "30s"
+  metrics_port: "9090"
+  enable_detailed_metrics: true
+  enable_distributed_tracing: true
+  
+  alerts:
+    journey_completion_rate_threshold: 90  # Alert if below 90%
+    service_latency_threshold_ms: 1000
+    error_rate_threshold_percent: 1
+    compliance_violation_threshold: 0  # Alert on any violation
+  
+  dashboards:
+    enable_journey_funnel_dashboard: true
+    enable_performance_dashboard: true
+    enable_compliance_dashboard: true
+    enable_business_metrics_dashboard: true
+
+# Feature Flags
+features:
+  enable_swagger_docs: true
+  enable_debug_endpoints: false  # Only enable in development
+  enable_journey_replay: true
+  enable_compliance_simulation: true
+  enable_load_testing_mode: false
+  
+  experimental:
+    enable_ai_journey_optimization: true
+    enable_predictive_abandonment_prevention: true
+    enable_real_time_personalization: true
+    enable_cross_channel_journey_sync: true
+
+# Integration Testing
+testing:
+  enable_mock_services: false
+  mock_service_latency_ms: 100
+  simulate_service_failures: false
+  chaos_testing_enabled: false 

@@ -1,0 +1,29 @@
+# User Management Service Configuration v3.1
+server:
+  port: 8080
+  read_timeout: 15s
+  write_timeout: 15s
+  idle_timeout: 60s
+
+authentication:
+  jwt:
+    issuer: "https://auth.iaros.ai"
+    audience: ["user_mgmt.prod"]
+    secret_key: "REPLACE_WITH_SECURE_SECRET"
+    token_expiration: "24h"
+  oauth:
+    provider_url: "https://oauth.iaros.ai"
+    fallback_cache: true
+
+security:
+  password_hashing:
+    cost: 14
+  rate_limit:
+    global_rpm: 5000
+    per_ip: 100
+  audit:
+    retention_days: 365
+    immutable_logs: true
+
+endpoints:
+  database: "postgres://user:pass@db.iaros.ai:5432/usermgmt"

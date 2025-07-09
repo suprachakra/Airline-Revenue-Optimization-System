@@ -1,0 +1,24 @@
+# Promotion Service Configuration v3.1
+server:
+  port: 8080
+  read_timeout: 15s
+  write_timeout: 15s
+  idle_timeout: 60s
+
+promotion:
+  default_discount: 0.05  # Fallback discount (5%)
+  special_codes:
+    FLASH50: 0.5
+
+fallback:
+  use_default: true
+  cache_expiry: "5m"
+
+logging:
+  level: "INFO"
+  format: "json"
+  output: "stdout"
+
+endpoints:
+  pricing_service: "http://pricing_service:8080"
+  forecasting_service: "http://forecasting_service:8081"

@@ -1,0 +1,35 @@
+### Forecasting Service Configuration v3.1
+server:
+  port: 8080
+  read_timeout: 15s
+  write_timeout: 15s
+  idle_timeout: 60s
+
+forecasting:
+  models:
+    ARIMA:
+      order: [2,1,1]
+      retrain_frequency: "daily"
+      target_MAPE: 10
+    LSTM:
+      layers: 2
+      dropout: 0.2
+      retrain_frequency: "hourly"
+      target_MAPE: 10
+  fallback:
+    use_cached_forecast: true
+    historical_window: "7d"
+
+logging:
+  level: "INFO"
+  format: "json"
+  output: "stdout"
+
+endpoints:
+  pricing_service: "http://pricing_service:8080"
+  ancillary_service: "http://ancillary_service:8082"
+
+circuit_breaker:
+  timeout: 2000
+  max_concurrent_requests: 100
+  error_percent_threshold: 25

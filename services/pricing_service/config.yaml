@@ -1,0 +1,442 @@
+# Pricing Service Configuration v4.0 - Enhanced Production Configuration
+server:
+  port: 8080
+  read_timeout: 30s
+  write_timeout: 30s
+  idle_timeout: 120s
+  max_header_bytes: 1048576
+  graceful_shutdown_timeout: 30s
+
+# Core pricing engine configuration
+pricing_engine:
+  # Real-time data sources
+  market_data_url: "https://api.marketdata.com/v1"
+  competitor_api_key: "${COMPETITOR_API_KEY}"
+  demand_signal_url: "https://api.demandanalytics.com/v2"
+  fuel_data_url: "https://api.fuelprices.com/v1/brent"
+  weather_api_key: "${WEATHER_API_KEY}"
+  events_api_url: "https://api.eventdata.com/v1"
+  
+  # Cache configuration
+  redis_url: "redis://redis-cluster:6379"
+  cache_expiry: "15m"
+  cache_max_size: 10000
+  compression_enabled: true
+  
+  # Performance settings
+  max_concurrent_requests: 500
+  request_timeout: "5s"
+  circuit_breaker_threshold: 3
+  circuit_breaker_timeout: "10s"
+
+# Route-specific pricing configuration
+route_configurations:
+  "NYC-LON":
+    base_fare: 650.0
+    currency: "USD"
+    market_segment: "international"
+    competitor_routes: ["NYC-LHR", "JFK-LGW", "EWR-STN"]
+    seasonal_factors:
+      spring: 0.0
+      summer: 0.25
+      autumn: -0.05
+      winter: 0.15
+    demand_elasticity: 1.2
+    fuel_sensitivity: 0.02
+    max_price_variance: 0.4
+    min_profit_margin: 0.15
+    class_multipliers:
+      Economy: 1.0
+      Premium: 1.5
+      Business: 3.5
+      First: 6.0
+    tax_rates:
+      fuel_tax: 0.04
+      airport_tax: 0.03
+      passenger_tax: 0.08
+    fees:
+      booking_fee: 25.0
+      security_fee: 15.0
+      facility_fee: 10.0
+  
+  "NYC-PAR":
+    base_fare: 700.0
+    currency: "USD"
+    market_segment: "international"
+    competitor_routes: ["NYC-CDG", "JFK-ORY"]
+    seasonal_factors:
+      spring: 0.1
+      summer: 0.3
+      autumn: 0.0
+      winter: 0.2
+    demand_elasticity: 1.1
+    fuel_sensitivity: 0.025
+    max_price_variance: 0.35
+    min_profit_margin: 0.18
+    class_multipliers:
+      Economy: 1.0
+      Premium: 1.6
+      Business: 3.8
+      First: 6.5
+    tax_rates:
+      fuel_tax: 0.05
+      airport_tax: 0.04
+      passenger_tax: 0.09
+    fees:
+      booking_fee: 25.0
+      security_fee: 18.0
+      facility_fee: 12.0
+
+# Advanced business rules configuration
+business_rules:
+  # Market-specific rules (58 scenarios)
+  market_rules:
+    geo_fencing:
+      enabled: true
+      regions:
+        IN: -0.15  # 15% discount for India
+        BR: -0.12  # 12% discount for Brazil
+        MX: -0.10  # 10% discount for Mexico
+        CN: -0.08  # 8% discount for China
+        RU: -0.10  # 10% discount for Russia
+    
+    seasonal_adjustments:
+      enabled: true
+      peak_season_markup: 0.25
+      off_season_discount: -0.10
+      holiday_surcharge: 0.30
+    
+    competitor_response:
+      enabled: true
+      aggressive_threshold: -0.05
+      neutral_threshold: 0.02
+      premium_threshold: 0.07
+  
+  # Product-specific rules (49 scenarios)
+  product_rules:
+    loyalty_discounts:
+      enabled: true
+      tiers:
+        Diamond: -0.15
+        Platinum: -0.12
+        Gold: -0.08
+        Silver: -0.05
+    
+    corporate_contracts:
+      enabled: true
+      volume_discount_threshold: 5
+      max_corporate_discount: -0.18
+      fuel_adjustment_sensitivity: 0.02
+    
+    class_based_pricing:
+      enabled: true
+      premium_markup_limit: 0.75
+      business_markup_limit: 2.5
+      first_markup_limit: 5.0
+  
+  # Operational rules (35 scenarios)
+  operational_rules:
+    advance_booking:
+      enabled: true
+      early_bird_threshold: 60
+      early_bird_discount: -0.15
+      last_minute_threshold: 7
+      last_minute_surcharge: 0.20
+    
+    channel_adjustments:
+      enabled: true
+      direct_discount: -0.05
+      mobile_discount: -0.03
+      gds_markup: 0.04
+      ota_markup: 0.06
+    
+    group_discounts:
+      enabled: true
+      small_group_threshold: 5
+      small_group_discount: -0.08
+      large_group_threshold: 10
+      large_group_discount: -0.15
+
+# Comprehensive fallback configuration
+fallback:
+  enabled: true
+  timeout: "10s"
+  max_attempts: 3
+  
+  # Fallback strategies in priority order
+  strategies:
+    historical_fallback:
+      enabled: true
+      window_days: 7
+      markup_factor: 1.15
+      timeout: "3s"
+    
+    competitor_fallback:
+      enabled: true
+      price_adjustment: 0.02
+      timeout: "2s"
+    
+    regional_fallback:
+      enabled: true
+      timeout: "1s"
+    
+    static_fallback:
+      enabled: true
+      markup_factor: 1.05
+      timeout: "500ms"
+    
+    emergency_fallback:
+      enabled: true
+      base_price: 500.0
+      timeout: "100ms"
+
+# Real-time data integration
+data_sources:
+  market_data:
+    provider: "MarketDataPro"
+    refresh_interval: "30s"
+    timeout: "2s"
+    retry_attempts: 2
+    
+  competitor_data:
+    provider: "CompetitorIntel"
+    refresh_interval: "5m"
+    timeout: "3s"
+    retry_attempts: 1
+    
+  fuel_prices:
+    provider: "BrentCrudePrices"
+    refresh_interval: "1h"
+    timeout: "5s"
+    retry_attempts: 2
+    
+  weather_data:
+    provider: "WeatherAPI"
+    refresh_interval: "15m"
+    timeout: "2s"
+    retry_attempts: 1
+
+# Caching configuration
+cache:
+  redis:
+    cluster_mode: true
+    nodes:
+      - "redis-node-1:6379"
+      - "redis-node-2:6379"
+      - "redis-node-3:6379"
+    password: "${REDIS_PASSWORD}"
+    db: 0
+    max_retries: 3
+    pool_size: 20
+    
+  local_cache:
+    max_size: 1000
+    default_ttl: "15m"
+    cleanup_interval: "5m"
+    compression: true
+  
+  pricing_cache:
+    base_ttl: "15m"
+    high_demand_ttl: "5m"
+    low_demand_ttl: "30m"
+    max_price_age: "1h"
+
+# Circuit breaker configuration
+circuit_breakers:
+  market_data:
+    failure_threshold: 3
+    reset_timeout: "10s"
+    max_requests: 5
+    interval: "10s"
+  
+  competitor_data:
+    failure_threshold: 2
+    reset_timeout: "15s"
+    max_requests: 3
+    interval: "15s"
+  
+  historical_data:
+    failure_threshold: 3
+    reset_timeout: "20s"
+    max_requests: 4
+    interval: "20s"
+
+# Rate limiting configuration
+rate_limiting:
+  enabled: true
+  global_limit: 1000
+  per_ip_limit: 50
+  burst_limit: 20
+  window: "1m"
+  
+  # Route-specific limits
+  routes:
+    "/pricing/calculate":
+      limit: 100
+      burst: 10
+    "/pricing/recommend":
+      limit: 50
+      burst: 5
+
+# Monitoring and metrics
+monitoring:
+  metrics:
+    enabled: true
+    port: 9090
+    path: "/metrics"
+    
+  health_check:
+    enabled: true
+    path: "/health"
+    interval: "30s"
+    
+  profiling:
+    enabled: false
+    port: 6060
+
+# Logging configuration
+logging:
+  level: "INFO"
+  format: "json"
+  output: "stdout"
+  
+  # Request logging
+  request_logging:
+    enabled: true
+    include_body: false
+    include_headers: true
+    max_body_size: 1024
+  
+  # Performance logging
+  performance_logging:
+    enabled: true
+    slow_request_threshold: "1s"
+    
+  # Business logic logging
+  business_logging:
+    enabled: true
+    log_rule_applications: true
+    log_price_adjustments: true
+
+# Security configuration
+security:
+  authentication:
+    enabled: true
+    type: "jwt"
+    secret: "${JWT_SECRET}"
+    expiry: "24h"
+  
+  authorization:
+    enabled: true
+    roles:
+      - "admin"
+      - "pricing_manager"
+      - "analyst"
+      - "readonly"
+  
+  cors:
+    enabled: true
+    allowed_origins: ["*"]
+    allowed_methods: ["GET", "POST", "PUT", "DELETE"]
+    allowed_headers: ["Content-Type", "Authorization"]
+
+# Database configuration
+database:
+  # Historical data database
+  historical:
+    type: "timescaledb"
+    host: "timescale-cluster"
+    port: 5432
+    database: "pricing_history"
+    username: "${DB_USERNAME}"
+    password: "${DB_PASSWORD}"
+    max_connections: 20
+    
+  # Configuration database
+  config:
+    type: "postgresql"
+    host: "postgres-primary"
+    port: 5432
+    database: "pricing_config"
+    username: "${CONFIG_DB_USERNAME}"
+    password: "${CONFIG_DB_PASSWORD}"
+    max_connections: 10
+
+# External service endpoints
+external_services:
+  forecasting_service:
+    url: "http://forecasting-service:8081"
+    timeout: "3s"
+    retry_attempts: 2
+    
+  ancillary_service:
+    url: "http://ancillary-service:8082"
+    timeout: "2s"
+    retry_attempts: 1
+    
+  loyalty_service:
+    url: "http://loyalty-service:8083"
+    timeout: "1s"
+    retry_attempts: 1
+
+# Performance tuning
+performance:
+  # Go runtime settings
+  max_procs: 0  # Use all available CPUs
+  gc_percent: 100
+  
+  # Connection pooling
+  max_idle_connections: 100
+  max_open_connections: 200
+  connection_max_lifetime: "1h"
+  
+  # Memory management
+  max_memory_usage: "2GB"
+  memory_cleanup_interval: "10m"
+
+# Feature flags
+features:
+  enable_ml_pricing: true
+  enable_real_time_competitor_tracking: true
+  enable_dynamic_caching: true
+  enable_advanced_analytics: true
+  enable_experimental_rules: false
+  enable_a_b_testing: true
+
+# Deployment configuration
+deployment:
+  environment: "production"
+  region: "us-east-1"
+  availability_zone: "us-east-1a"
+  instance_type: "c5.2xlarge"
+  
+  # Auto-scaling settings
+  auto_scaling:
+    enabled: true
+    min_instances: 3
+    max_instances: 20
+    target_cpu_utilization: 70
+    scale_up_cooldown: "5m"
+    scale_down_cooldown: "10m"
+
+# Business intelligence and analytics
+analytics:
+  # Revenue optimization
+  revenue_optimization:
+    enabled: true
+    target_margin: 0.18
+    yield_management: true
+    dynamic_pricing_sensitivity: 0.1
+  
+  # A/B testing
+  ab_testing:
+    enabled: true
+    sample_rate: 0.05
+    test_duration: "7d"
+  
+  # Reporting
+  reporting:
+    enabled: true
+    daily_reports: true
+    weekly_reports: true
+    real_time_dashboard: true

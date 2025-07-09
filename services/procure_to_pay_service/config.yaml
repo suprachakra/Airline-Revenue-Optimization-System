@@ -1,0 +1,24 @@
+# Procure-to-Pay Service Configuration
+environments:
+  production:
+    erp_endpoints:
+      sap_ariba: "https://ariba.prod.iaros.ai"
+      sap_s4hana: "https://s4hana.prod.iaros.ai"
+    vendor_api:
+      base_url: "https://vendors.prod.iaros.ai"
+    rate_limits:
+      global_rpm: 5000
+      burst: 800
+    fallback_policies:
+      po_creation: "cache_then_manual"
+      invoice_processing: "historical_match"
+      payment_authorization: "manual_queue"
+      vendor_management: "flag_for_review"
+
+security:
+  data_encryption:
+    algorithm: "AES-256-GCM-SIV"
+    key_rotation: "72h"
+  compliance:
+    iata_ndc: true
+    gdpr: true
