@@ -1,2 +1,0 @@
-# example_rule.rules - Sample Suricata IDS rule for detecting SSH brute force attempts.
-alert tcp any any -> any 22 (msg:"SSH Brute Force Attempt Detected"; flow:to_server,established; detection_filter: track by_src, count 5, seconds 60; sid:100001; rev:1;)

@@ -1,9 +1,0 @@
-# jaeger_agent_config.yaml
-collector:
-  zipkin:
-    http-port: 9411
-agent:
-  reportBatchSize: 100
-  reporter:
-    logSpans: true
-    localAgentHostPort: "jaeger-agent.iaros-prod:6831"
