@@ -1,0 +1,21 @@
+{
+  "index_patterns": ["iaros-logs-*"],
+  "settings": {
+    "number_of_shards": 3,
+    "number_of_replicas": 2,
+    "index": {
+      "lifecycle": {
+        "name": "log_policy",
+        "rollover_alias": "iaros-logs"
+      }
+    }
+  },
+  "mappings": {
+    "properties": {
+      "timestamp": {"type": "date"},
+      "level": {"type": "keyword"},
+      "message": {"type": "text"},
+      "service": {"type": "keyword"}
+    }
+  }
+}

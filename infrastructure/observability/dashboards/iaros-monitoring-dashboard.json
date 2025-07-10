@@ -1,0 +1,240 @@
+{
+  "dashboard": {
+    "id": null,
+    "title": "IAROS Production Monitoring",
+    "description": "Centralized monitoring dashboard for all IAROS microservices",
+    "tags": ["iaros", "production", "microservices"],
+    "timezone": "UTC",
+    "refresh": "30s",
+    "time": {
+      "from": "now-1h",
+      "to": "now"
+    },
+    "panels": [
+      {
+        "id": 1,
+        "title": "Service Health Overview",
+        "type": "stat",
+        "targets": [
+          {
+            "expr": "up{job=~\"iaros-.*\"}",
+            "legendFormat": "{{service}}"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "mode": "thresholds"
+            },
+            "thresholds": {
+              "steps": [
+                {"color": "red", "value": 0},
+                {"color": "green", "value": 1}
+              ]
+            }
+          }
+        },
+        "gridPos": {"h": 4, "w": 24, "x": 0, "y": 0}
+      },
+      {
+        "id": 2,
+        "title": "Request Rate (RPS)",
+        "type": "graph",
+        "targets": [
+          {
+            "expr": "sum(rate(http_requests_total{job=~\"iaros-.*\"}[5m])) by (service)",
+            "legendFormat": "{{service}}"
+          }
+        ],
+        "yAxes": [
+          {"label": "Requests/sec", "min": 0}
+        ],
+        "gridPos": {"h": 8, "w": 12, "x": 0, "y": 4}
+      },
+      {
+        "id": 3,
+        "title": "Error Rate",
+        "type": "graph",
+        "targets": [
+          {
+            "expr": "sum(rate(http_requests_total{job=~\"iaros-.*\",status=~\"5.*\"}[5m])) by (service) / sum(rate(http_requests_total{job=~\"iaros-.*\"}[5m])) by (service) * 100",
+            "legendFormat": "{{service}} Error %"
+          }
+        ],
+        "yAxes": [
+          {"label": "Error %", "min": 0, "max": 100}
+        ],
+        "gridPos": {"h": 8, "w": 12, "x": 12, "y": 4}
+      },
+      {
+        "id": 4,
+        "title": "Response Time (P95)",
+        "type": "graph",
+        "targets": [
+          {
+            "expr": "histogram_quantile(0.95, sum(rate(http_request_duration_seconds_bucket{job=~\"iaros-.*\"}[5m])) by (service, le))",
+            "legendFormat": "{{service}} P95"
+          }
+        ],
+        "yAxes": [
+          {"label": "Seconds", "min": 0}
+        ],
+        "gridPos": {"h": 8, "w": 12, "x": 0, "y": 12}
+      },
+      {
+        "id": 5,
+        "title": "CPU Usage",
+        "type": "graph",
+        "targets": [
+          {
+            "expr": "sum(rate(container_cpu_usage_seconds_total{namespace=\"iaros-prod\"}[5m])) by (pod) * 100",
+            "legendFormat": "{{pod}}"
+          }
+        ],
+        "yAxes": [
+          {"label": "CPU %", "min": 0}
+        ],
+        "gridPos": {"h": 8, "w": 12, "x": 12, "y": 12}
+      },
+      {
+        "id": 6,
+        "title": "Memory Usage",
+        "type": "graph",
+        "targets": [
+          {
+            "expr": "sum(container_memory_usage_bytes{namespace=\"iaros-prod\"}) by (pod) / sum(container_spec_memory_limit_bytes{namespace=\"iaros-prod\"}) by (pod) * 100",
+            "legendFormat": "{{pod}}"
+          }
+        ],
+        "yAxes": [
+          {"label": "Memory %", "min": 0, "max": 100}
+        ],
+        "gridPos": {"h": 8, "w": 12, "x": 0, "y": 20}
+      },
+      {
+        "id": 7,
+        "title": "Pricing Service Metrics",
+        "type": "graph",
+        "targets": [
+          {
+            "expr": "pricing_calculations_total",
+            "legendFormat": "Total Calculations"
+          },
+          {
+            "expr": "pricing_fallback_total",
+            "legendFormat": "Fallback Events"
+          },
+          {
+            "expr": "pricing_cache_hit_rate",
+            "legendFormat": "Cache Hit Rate %"
+          }
+        ],
+        "gridPos": {"h": 8, "w": 12, "x": 12, "y": 20}
+      },
+      {
+        "id": 8,
+        "title": "Forecasting Service Metrics",
+        "type": "graph",
+        "targets": [
+          {
+            "expr": "forecasting_predictions_total",
+            "legendFormat": "Total Predictions"
+          },
+          {
+            "expr": "forecasting_model_accuracy",
+            "legendFormat": "Model Accuracy %"
+          },
+          {
+            "expr": "forecasting_drift_events_total",
+            "legendFormat": "Drift Events"
+          }
+        ],
+        "gridPos": {"h": 8, "w": 12, "x": 0, "y": 28}
+      },
+      {
+        "id": 9,
+        "title": "API Gateway Metrics",
+        "type": "graph",
+        "targets": [
+          {
+            "expr": "gateway_requests_total",
+            "legendFormat": "Total Requests"
+          },
+          {
+            "expr": "gateway_rate_limit_hits_total",
+            "legendFormat": "Rate Limit Hits"
+          },
+          {
+            "expr": "gateway_circuit_breaker_state",
+            "legendFormat": "Circuit Breaker State"
+          }
+        ],
+        "gridPos": {"h": 8, "w": 12, "x": 12, "y": 28}
+      },
+      {
+        "id": 10,
+        "title": "Database Connections",
+        "type": "graph",
+        "targets": [
+          {
+            "expr": "database_connections_active",
+            "legendFormat": "Active Connections"
+          },
+          {
+            "expr": "database_connections_max",
+            "legendFormat": "Max Connections"
+          }
+        ],
+        "gridPos": {"h": 8, "w": 12, "x": 0, "y": 36}
+      },
+      {
+        "id": 11,
+        "title": "Cache Performance",
+        "type": "graph",
+        "targets": [
+          {
+            "expr": "redis_cache_hit_rate",
+            "legendFormat": "Cache Hit Rate %"
+          },
+          {
+            "expr": "redis_connected_clients",
+            "legendFormat": "Connected Clients"
+          },
+          {
+            "expr": "redis_memory_usage",
+            "legendFormat": "Memory Usage"
+          }
+        ],
+        "gridPos": {"h": 8, "w": 12, "x": 12, "y": 36}
+      }
+    ],
+    "templating": {
+      "list": [
+        {
+          "name": "service",
+          "type": "query",
+          "query": "label_values(up{job=~\"iaros-.*\"}, service)",
+          "multi": true,
+          "includeAll": true
+        },
+        {
+          "name": "instance",
+          "type": "query",
+          "query": "label_values(up{job=~\"iaros-.*\", service=\"$service\"}, instance)",
+          "multi": true,
+          "includeAll": true
+        }
+      ]
+    },
+    "annotations": {
+      "list": [
+        {
+          "name": "Deployments",
+          "datasource": "Prometheus",
+          "expr": "increase(kube_deployment_status_replicas_updated{namespace=\"iaros-prod\"}[1m])",
+          "textFormat": "Deployment: {{deployment}}"
+        }
+      ]
+    }
+  }
+} 

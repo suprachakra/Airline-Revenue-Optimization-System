@@ -1,0 +1,167 @@
+# Centralized Prometheus Configuration for IAROS
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: prometheus-config
+  namespace: monitoring
+data:
+  prometheus.yml: |
+    global:
+      scrape_interval: 15s
+      evaluation_interval: 15s
+      external_labels:
+        cluster: 'iaros-prod'
+        environment: 'production'
+
+    rule_files:
+      - "/etc/prometheus/rules/*.yml"
+
+    alerting:
+      alertmanagers:
+        - static_configs:
+            - targets:
+              - alertmanager:9093
+
+    scrape_configs:
+      # IAROS Services Monitoring
+      - job_name: 'iaros-api-gateway'
+        static_configs:
+          - targets: ['api-gateway-service.iaros-prod:9090']
+        scrape_interval: 30s
+        metrics_path: /metrics
+        relabel_configs:
+          - source_labels: [__address__]
+            target_label: instance
+          - target_label: service
+            replacement: api-gateway
+
+      - job_name: 'iaros-pricing-service'
+        static_configs:
+          - targets: ['pricing-service-service.iaros-prod:8080']
+        scrape_interval: 30s
+        metrics_path: /metrics
+        relabel_configs:
+          - target_label: service
+            replacement: pricing-service
+
+      - job_name: 'iaros-forecasting-service'
+        static_configs:
+          - targets: ['forecasting-service-service.iaros-prod:8080']
+        scrape_interval: 30s
+        metrics_path: /metrics
+        relabel_configs:
+          - target_label: service
+            replacement: forecasting-service
+
+      - job_name: 'iaros-offer-service'
+        static_configs:
+          - targets: ['offer-service-service.iaros-prod:8080']
+        scrape_interval: 30s
+        metrics_path: /metrics
+        relabel_configs:
+          - target_label: service
+            replacement: offer-service
+
+      - job_name: 'iaros-order-service'
+        static_configs:
+          - targets: ['order-service-service.iaros-prod:8080']
+        scrape_interval: 30s
+        metrics_path: /metrics
+        relabel_configs:
+          - target_label: service
+            replacement: order-service
+
+      - job_name: 'iaros-distribution-service'
+        static_configs:
+          - targets: ['distribution-service-service.iaros-prod:8080']
+        scrape_interval: 30s
+        metrics_path: /metrics
+        relabel_configs:
+          - target_label: service
+            replacement: distribution-service
+
+      - job_name: 'iaros-ancillary-service'
+        static_configs:
+          - targets: ['ancillary-service-service.iaros-prod:8080']
+        scrape_interval: 30s
+        metrics_path: /metrics
+        relabel_configs:
+          - target_label: service
+            replacement: ancillary-service
+
+      - job_name: 'iaros-user-management-service'
+        static_configs:
+          - targets: ['user-management-service-service.iaros-prod:8080']
+        scrape_interval: 30s
+        metrics_path: /metrics
+        relabel_configs:
+          - target_label: service
+            replacement: user-management-service
+
+      - job_name: 'iaros-network-planning-service'
+        static_configs:
+          - targets: ['network-planning-service-service.iaros-prod:8080']
+        scrape_interval: 30s
+        metrics_path: /metrics
+        relabel_configs:
+          - target_label: service
+            replacement: network-planning-service
+
+      - job_name: 'iaros-promotion-service'
+        static_configs:
+          - targets: ['promotion-service-service.iaros-prod:8080']
+        scrape_interval: 30s
+        metrics_path: /metrics
+        relabel_configs:
+          - target_label: service
+            replacement: promotion-service
+
+      - job_name: 'iaros-procure-to-pay-service'
+        static_configs:
+          - targets: ['procure-to-pay-service-service.iaros-prod:8080']
+        scrape_interval: 30s
+        metrics_path: /metrics
+        relabel_configs:
+          - target_label: service
+            replacement: procure-to-pay-service
+
+      # Kubernetes Monitoring
+      - job_name: 'kubernetes-apiservers'
+        kubernetes_sd_configs:
+          - role: endpoints
+        scheme: https
+        tls_config:
+          ca_file: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
+        bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
+        relabel_configs:
+          - source_labels: [__meta_kubernetes_namespace, __meta_kubernetes_service_name, __meta_kubernetes_endpoint_port_name]
+            action: keep
+            regex: default;kubernetes;https
+
+      - job_name: 'kubernetes-nodes'
+        kubernetes_sd_configs:
+          - role: node
+        scheme: https
+        tls_config:
+          ca_file: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
+        bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
+        relabel_configs:
+          - action: labelmap
+            regex: __meta_kubernetes_node_label_(.+)
+
+      - job_name: 'kubernetes-pods'
+        kubernetes_sd_configs:
+          - role: pod
+        relabel_configs:
+          - source_labels: [__meta_kubernetes_pod_annotation_prometheus_io_scrape]
+            action: keep
+            regex: true
+          - source_labels: [__meta_kubernetes_pod_annotation_prometheus_io_path]
+            action: replace
+            target_label: __metrics_path__
+            regex: (.+)
+          - source_labels: [__address__, __meta_kubernetes_pod_annotation_prometheus_io_port]
+            action: replace
+            regex: ([^:]+)(?::\d+)?;(\d+)
+            replacement: ${1}:${2}
+            target_label: __address__ 

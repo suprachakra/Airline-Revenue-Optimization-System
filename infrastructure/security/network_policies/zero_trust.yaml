@@ -1,0 +1,13 @@
+# zero_trust.yaml - Zero Trust Communication Policies
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: zero-trust-policies
+  namespace: iaros-prod
+data:
+  policy: |
+    # Enforce mutual TLS between services.
+    # Only allow communication from services within the iaros-prod namespace.
+    allow:
+      - namespace: iaros-prod
+      - ip: 10.0.0.0/8

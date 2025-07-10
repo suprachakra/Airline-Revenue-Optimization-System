@@ -1,0 +1,112 @@
+# IAROS Comprehensive Suricata IDS Rules
+# Tailored for Airline Revenue Optimization Systems
+# Version: 1.0 - Production Ready
+
+# ==================== API SECURITY RULES ====================
+
+# Detect SQL injection attempts in API parameters
+alert http any any -> any any (msg:"IAROS - SQL Injection Attempt in API"; flow:established,to_server; content:"POST"; http_method; content:"application/json"; http_content_type; pcre:"/(\"|').*?(\bUNION\b|\bSELECT\b|\bINSERT\b|\bDELETE\b|\bDROP\b|\bEXEC\b).*?(\"|')/i"; sid:10001; rev:1; classtype:web-application-attack;)
+
+# Detect XSS attempts in booking/pricing requests
+alert http any any -> any any (msg:"IAROS - XSS Attempt in Booking Request"; flow:established,to_server; content:"POST"; http_method; content:"/api/booking"; http_uri; pcre:"/<\s*script[^>]*>.*?<\s*\/\s*script\s*>/i"; sid:10002; rev:1; classtype:web-application-attack;)
+
+# Detect command injection in pricing API
+alert http any any -> any any (msg:"IAROS - Command Injection in Pricing API"; flow:established,to_server; content:"POST"; http_method; content:"/api/pricing"; http_uri; pcre:"/(\||;|&|\$\(|\`)/"; sid:10003; rev:1; classtype:web-application-attack;)
+
+# Detect JWT manipulation attempts
+alert http any any -> any any (msg:"IAROS - JWT Token Manipulation"; flow:established,to_server; content:"Authorization: Bearer"; http_header; pcre:"/Bearer\s+[A-Za-z0-9\-_]+\.[A-Za-z0-9\-_]*\.[A-Za-z0-9\-_]*$/"; content:!"eyJ"; within:100; sid:10004; rev:1; classtype:attempted-user;)
+
+# ==================== BUSINESS LOGIC ATTACKS ====================
+
+# Detect price manipulation attempts
+alert http any any -> any any (msg:"IAROS - Price Manipulation Attempt"; flow:established,to_server; content:"POST"; http_method; content:"/api/pricing/calculate"; http_uri; content:"price"; http_client_body; pcre:"/\"price\"\s*:\s*(-?\d+\.?\d*)/"; byte_test:4,>,1000000,0,string,dec; sid:10005; rev:1; classtype:policy-violation;)
+
+# Detect seat inventory manipulation
+alert http any any -> any any (msg:"IAROS - Seat Inventory Manipulation"; flow:established,to_server; content:"PUT"; http_method; content:"/api/inventory"; http_uri; content:"available_seats"; http_client_body; pcre:"/\"available_seats\"\s*:\s*(-?\d+)/"; byte_test:4,<,0,0,string,dec; sid:10006; rev:1; classtype:policy-violation;)
+
+# Detect booking flood attacks
+alert http any any -> any any (msg:"IAROS - Booking Flood Attack"; flow:established,to_server; content:"POST"; http_method; content:"/api/booking"; http_uri; threshold:type threshold, track by_src, count 10, seconds 60; sid:10007; rev:1; classtype:attempted-dos;)
+
+# Detect fare class escalation attempts
+alert http any any -> any any (msg:"IAROS - Fare Class Escalation"; flow:established,to_server; content:"POST"; http_method; content:"/api/booking"; http_uri; content:"fare_class"; http_client_body; pcre:"/\"fare_class\"\s*:\s*\"(FIRST|BUSINESS)\"/i"; content:"economy"; http_client_body; distance:0; sid:10008; rev:1; classtype:policy-violation;)
+
+# ==================== FINANCIAL SECURITY RULES ====================
+
+# Detect payment bypass attempts
+alert http any any -> any any (msg:"IAROS - Payment Bypass Attempt"; flow:established,to_server; content:"POST"; http_method; content:"/api/payment"; http_uri; content:"amount"; http_client_body; pcre:"/\"amount\"\s*:\s*0(\.0+)?/"; sid:10009; rev:1; classtype:policy-violation;)
+
+# Detect currency manipulation
+alert http any any -> any any (msg:"IAROS - Currency Manipulation"; flow:established,to_server; content:"POST"; http_method; content:"currency"; http_client_body; pcre:"/\"currency\"\s*:\s*\"[^A-Z]{3}\"/"; sid:10010; rev:1; classtype:policy-violation;)
+
+# Detect loyalty points fraud
+alert http any any -> any any (msg:"IAROS - Loyalty Points Fraud"; flow:established,to_server; content:"POST"; http_method; content:"/api/loyalty"; http_uri; content:"points"; http_client_body; pcre:"/\"points\"\s*:\s*(\d{7,})/"; sid:10011; rev:1; classtype:policy-violation;)
+
+# ==================== AUTHENTICATION & AUTHORIZATION ====================
+
+# Detect brute force login attempts
+alert http any any -> any any (msg:"IAROS - Brute Force Login Attempt"; flow:established,to_server; content:"POST"; http_method; content:"/api/auth/login"; http_uri; threshold:type threshold, track by_src, count 5, seconds 300; sid:10012; rev:1; classtype:attempted-user;)
+
+# Detect session hijacking attempts
+alert http any any -> any any (msg:"IAROS - Session Hijacking Attempt"; flow:established,to_server; content:"Cookie:"; http_header; pcre:"/sessionid=[a-zA-Z0-9]{32,}/"; content:!"User-Agent:"; http_header; sid:10013; rev:1; classtype:attempted-user;)
+
+# Detect privilege escalation attempts
+alert http any any -> any any (msg:"IAROS - Privilege Escalation Attempt"; flow:established,to_server; content:"PUT"; http_method; content:"/api/user"; http_uri; content:"role"; http_client_body; pcre:"/\"role\"\s*:\s*\"(admin|superuser|root)\"/i"; sid:10014; rev:1; classtype:attempted-admin;)
+
+# ==================== DATA EXFILTRATION PREVENTION ====================
+
+# Detect bulk data extraction
+alert http any any -> any any (msg:"IAROS - Bulk Data Extraction"; flow:established,to_server; content:"GET"; http_method; content:"/api/"; http_uri; content:"limit"; http_uri; pcre:"/limit=(\d{4,})/"; sid:10015; rev:1; classtype:policy-violation;)
+
+# Detect PII data exfiltration
+alert http any any -> any any (msg:"IAROS - PII Data Exfiltration"; flow:established,from_server; content:"200"; http_stat_code; pcre:"/\"(ssn|social_security|passport|credit_card)\"/i"; threshold:type threshold, track by_src, count 10, seconds 60; sid:10016; rev:1; classtype:policy-violation;)
+
+# ==================== API ABUSE PREVENTION ====================
+
+# Detect API rate limit bypass attempts
+alert http any any -> any any (msg:"IAROS - API Rate Limit Bypass"; flow:established,to_server; content:"X-Forwarded-For:"; http_header; pcre:"/X-Forwarded-For:\s*(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}(,\s*\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}){2,})/"; sid:10017; rev:1; classtype:policy-violation;)
+
+# Detect automated booking bots
+alert http any any -> any any (msg:"IAROS - Automated Booking Bot"; flow:established,to_server; content:"POST"; http_method; content:"/api/booking"; http_uri; content:!"User-Agent:"; http_header; sid:10018; rev:1; classtype:policy-violation;)
+
+# Detect scraping attempts
+alert http any any -> any any (msg:"IAROS - Web Scraping Attempt"; flow:established,to_server; content:"GET"; http_method; pcre:"/User-Agent:\s*.*(bot|crawler|spider|scraper)/i"; http_header; threshold:type threshold, track by_src, count 20, seconds 60; sid:10019; rev:1; classtype:policy-violation;)
+
+# ==================== PROTOCOL ANOMALIES ====================
+
+# Detect HTTP parameter pollution
+alert http any any -> any any (msg:"IAROS - HTTP Parameter Pollution"; flow:established,to_server; content:"POST"; http_method; pcre:"/(\w+)=[^&]*&.*?\1=/"; sid:10020; rev:1; classtype:protocol-command-decode;)
+
+# Detect oversized requests
+alert http any any -> any any (msg:"IAROS - Oversized Request Body"; flow:established,to_server; content:"Content-Length:"; http_header; pcre:"/Content-Length:\s*(\d{8,})/"; sid:10021; rev:1; classtype:attempted-dos;)
+
+# ==================== EXTERNAL INTEGRATION SECURITY ====================
+
+# Detect GDS API abuse
+alert http any any -> any any (msg:"IAROS - GDS API Abuse"; flow:established,to_server; content:"POST"; http_method; content:"/api/gds"; http_uri; threshold:type threshold, track by_src, count 100, seconds 60; sid:10022; rev:1; classtype:attempted-dos;)
+
+# Detect NDC protocol violations
+alert http any any -> any any (msg:"IAROS - NDC Protocol Violation"; flow:established,to_server; content:"POST"; http_method; content:"/api/ndc"; http_uri; content:!"IATA_AirShoppingRQ"; http_client_body; content:"AirShopping"; http_client_body; sid:10023; rev:1; classtype:protocol-command-decode;)
+
+# ==================== SYSTEM MONITORING ====================
+
+# Detect configuration tampering
+alert http any any -> any any (msg:"IAROS - Configuration Tampering"; flow:established,to_server; content:"PUT"; http_method; content:"/api/config"; http_uri; content:"database"; http_client_body; sid:10024; rev:1; classtype:attempted-admin;)
+
+# Detect backup/restore abuse
+alert http any any -> any any (msg:"IAROS - Backup Restore Abuse"; flow:established,to_server; content:"POST"; http_method; pcre:"/\/(backup|restore|export|import)/"; http_uri; sid:10025; rev:1; classtype:attempted-admin;)
+
+# ==================== PERFORMANCE MONITORING ====================
+
+# Detect slowloris attacks
+alert tcp any any -> any [8080,8081,8082,8083,8084,8085,8086,8087,8088,8089,8090,8091] (msg:"IAROS - Slowloris Attack"; flow:established,to_server; detection_filter:track by_src, count 10, seconds 300; flowbits:set,slowloris; sid:10026; rev:1; classtype:attempted-dos;)
+
+# Detect connection flooding
+alert tcp any any -> any [8080,8081,8082,8083,8084,8085,8086,8087,8088,8089,8090,8091] (msg:"IAROS - Connection Flood"; flags:S; threshold:type threshold, track by_src, count 20, seconds 10; sid:10027; rev:1; classtype:attempted-dos;)
+
+# ==================== COMPLIANCE MONITORING ====================
+
+# Detect GDPR violation attempts
+alert http any any -> any any (msg:"IAROS - GDPR Violation - Data Access Without Consent"; flow:established,to_server; content:"GET"; http_method; content:"/api/user"; http_uri; content:!"consent=true"; http_uri; pcre:"/\/(pii|personal|profile)/"; http_uri; sid:10028; rev:1; classtype:policy-violation;)
+
+# Detect PCI-DSS violations
+alert http any any -> any any (msg:"IAROS - PCI-DSS Violation - Credit Card in Logs"; flow:established,from_server; content:"200"; http_stat_code; pcre:"/\"card_number\"\s*:\s*\"\d{13,19}\"/"; sid:10029; rev:1; classtype:policy-violation;) 

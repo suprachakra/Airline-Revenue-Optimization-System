@@ -1,0 +1,14 @@
+# Sample Global Configuration for IAROS
+app:
+  mode: "production"
+  fallback_threshold: "45%"
+  max_latency: 200
+logging:
+  level: "INFO"
+  format: "json"
+  retention_days: 30
+security:
+  jwt:
+    issuer: "https://auth.iaros.ai"
+    audience: ["api.iaros.ai"]
+    rotation_interval: "6h"

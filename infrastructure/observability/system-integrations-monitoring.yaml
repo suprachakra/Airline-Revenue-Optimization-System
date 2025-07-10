@@ -1,0 +1,412 @@
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: system-integrations-monitor
+  namespace: iaros-production
+  labels:
+    app: system-integrations
+spec:
+  selector:
+    matchLabels:
+      app: system-integrations
+  endpoints:
+  - port: metrics
+    interval: 30s
+    path: /metrics
+---
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: system-integrations-alerts
+  namespace: iaros-production
+  labels:
+    app: system-integrations
+spec:
+  groups:
+  - name: system-integrations.rules
+    rules:
+    
+    # High Error Rate Alerts
+    - alert: SystemIntegrationHighErrorRate
+      expr: |
+        (
+          rate(system_integration_requests_total{status!~"2.."}[5m]) /
+          rate(system_integration_requests_total[5m])
+        ) > 0.05
+      for: 2m
+      labels:
+        severity: warning
+        team: platform
+      annotations:
+        summary: "High error rate in system integration {{ $labels.integration }}"
+        description: "Error rate for {{ $labels.integration }} is {{ $value | humanizePercentage }} over the last 5 minutes"
+    
+    # Critical Error Rate Alerts
+    - alert: SystemIntegrationCriticalErrorRate
+      expr: |
+        (
+          rate(system_integration_requests_total{status!~"2.."}[5m]) /
+          rate(system_integration_requests_total[5m])
+        ) > 0.15
+      for: 1m
+      labels:
+        severity: critical
+        team: platform
+      annotations:
+        summary: "Critical error rate in system integration {{ $labels.integration }}"
+        description: "Error rate for {{ $labels.integration }} is {{ $value | humanizePercentage }} over the last 5 minutes"
+    
+    # High Latency Alerts
+    - alert: SystemIntegrationHighLatency
+      expr: |
+        histogram_quantile(0.95, 
+          rate(system_integration_request_duration_seconds_bucket[5m])
+        ) > 2
+      for: 3m
+      labels:
+        severity: warning
+        team: platform
+      annotations:
+        summary: "High latency in system integration {{ $labels.integration }}"
+        description: "95th percentile latency for {{ $labels.integration }} is {{ $value }}s"
+    
+    # Circuit Breaker Open Alerts
+    - alert: SystemIntegrationCircuitBreakerOpen
+      expr: |
+        system_integration_circuit_breaker_state{state="open"} == 1
+      for: 1m
+      labels:
+        severity: critical
+        team: platform
+      annotations:
+        summary: "Circuit breaker open for {{ $labels.integration }}"
+        description: "Circuit breaker for {{ $labels.integration }} has been open for more than 1 minute"
+    
+    # Low Success Rate Alerts
+    - alert: SystemIntegrationLowSuccessRate
+      expr: |
+        (
+          rate(system_integration_requests_total{status=~"2.."}[10m]) /
+          rate(system_integration_requests_total[10m])
+        ) < 0.95
+      for: 5m
+      labels:
+        severity: warning
+        team: platform
+      annotations:
+        summary: "Low success rate for system integration {{ $labels.integration }}"
+        description: "Success rate for {{ $labels.integration }} is {{ $value | humanizePercentage }} over the last 10 minutes"
+    
+    # Integration Service Down
+    - alert: SystemIntegrationServiceDown
+      expr: |
+        up{job="system-integrations"} == 0
+      for: 1m
+      labels:
+        severity: critical
+        team: platform
+      annotations:
+        summary: "System integration service is down"
+        description: "System integration service instance {{ $labels.instance }} has been down for more than 1 minute"
+    
+    # High Memory Usage
+    - alert: SystemIntegrationHighMemoryUsage
+      expr: |
+        (
+          container_memory_working_set_bytes{pod=~"system-integrations-.*"} /
+          container_spec_memory_limit_bytes{pod=~"system-integrations-.*"}
+        ) > 0.85
+      for: 5m
+      labels:
+        severity: warning
+        team: platform
+      annotations:
+        summary: "High memory usage in system integrations"
+        description: "Memory usage is {{ $value | humanizePercentage }} for pod {{ $labels.pod }}"
+    
+    # High CPU Usage
+    - alert: SystemIntegrationHighCPUUsage
+      expr: |
+        (
+          rate(container_cpu_usage_seconds_total{pod=~"system-integrations-.*"}[5m]) /
+          container_spec_cpu_quota{pod=~"system-integrations-.*"} * 
+          container_spec_cpu_period{pod=~"system-integrations-.*"}
+        ) > 0.8
+      for: 5m
+      labels:
+        severity: warning
+        team: platform
+      annotations:
+        summary: "High CPU usage in system integrations"
+        description: "CPU usage is {{ $value | humanizePercentage }} for pod {{ $labels.pod }}"
+    
+    # Sabre Integration Specific Alerts
+    - alert: SabreIntegrationDown
+      expr: |
+        system_integration_health{integration="sabre"} == 0
+      for: 2m
+      labels:
+        severity: critical
+        team: platform
+        integration: sabre
+      annotations:
+        summary: "Sabre PSS integration is down"
+        description: "Sabre integration has been unhealthy for more than 2 minutes"
+    
+    # SITA BagManager Specific Alerts
+    - alert: SITABagManagerWebSocketDown
+      expr: |
+        system_integration_websocket_connections{integration="sita"} == 0
+      for: 1m
+      labels:
+        severity: warning
+        team: platform
+        integration: sita
+      annotations:
+        summary: "SITA BagManager WebSocket connections down"
+        description: "No active WebSocket connections to SITA BagManager"
+    
+    # Weather Data Alerts
+    - alert: WeatherDataStale
+      expr: |
+        (time() - system_integration_last_success_timestamp{integration="weather"}) > 600
+      for: 0m
+      labels:
+        severity: warning
+        team: platform
+        integration: weather
+      annotations:
+        summary: "Weather data is stale"
+        description: "Weather data hasn't been updated for more than 10 minutes"
+    
+    # Social Media Integration Alerts
+    - alert: SocialMediaRateLimitExceeded
+      expr: |
+        system_integration_rate_limit_exceeded{integration="social_media"} > 0
+      for: 0m
+      labels:
+        severity: warning
+        team: marketing
+        integration: social_media
+      annotations:
+        summary: "Social media rate limit exceeded"
+        description: "Rate limit exceeded for social media platform {{ $labels.platform }}"
+    
+    # Survey Platform Alerts
+    - alert: SurveyPlatformResponseLag
+      expr: |
+        system_integration_response_lag_seconds{integration="survey"} > 300
+      for: 2m
+      labels:
+        severity: warning
+        team: customer_service
+        integration: survey
+      annotations:
+        summary: "Survey platform response lag detected"
+        description: "Survey responses are delayed by {{ $value }}s"
+
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: grafana-dashboards-system-integrations
+  namespace: iaros-production
+  labels:
+    grafana_dashboard: "true"
+data:
+  system-integrations-dashboard.json: |
+    {
+      "dashboard": {
+        "title": "System Integrations Dashboard",
+        "tags": ["iaros", "integrations", "monitoring"],
+        "timezone": "UTC",
+        "panels": [
+          {
+            "title": "Integration Health Overview",
+            "type": "stat",
+            "targets": [
+              {
+                "expr": "system_integration_health",
+                "legendFormat": "{{ integration }}"
+              }
+            ],
+            "fieldConfig": {
+              "defaults": {
+                "thresholds": {
+                  "steps": [
+                    {"color": "red", "value": 0},
+                    {"color": "green", "value": 1}
+                  ]
+                }
+              }
+            }
+          },
+          {
+            "title": "Request Rate by Integration",
+            "type": "graph",
+            "targets": [
+              {
+                "expr": "rate(system_integration_requests_total[5m])",
+                "legendFormat": "{{ integration }}"
+              }
+            ]
+          },
+          {
+            "title": "Error Rate by Integration",
+            "type": "graph",
+            "targets": [
+              {
+                "expr": "rate(system_integration_requests_total{status!~\"2..\"}[5m]) / rate(system_integration_requests_total[5m])",
+                "legendFormat": "{{ integration }}"
+              }
+            ]
+          },
+          {
+            "title": "Response Time Percentiles",
+            "type": "graph",
+            "targets": [
+              {
+                "expr": "histogram_quantile(0.50, rate(system_integration_request_duration_seconds_bucket[5m]))",
+                "legendFormat": "50th percentile"
+              },
+              {
+                "expr": "histogram_quantile(0.95, rate(system_integration_request_duration_seconds_bucket[5m]))",
+                "legendFormat": "95th percentile"
+              },
+              {
+                "expr": "histogram_quantile(0.99, rate(system_integration_request_duration_seconds_bucket[5m]))",
+                "legendFormat": "99th percentile"
+              }
+            ]
+          },
+          {
+            "title": "Circuit Breaker States",
+            "type": "graph",
+            "targets": [
+              {
+                "expr": "system_integration_circuit_breaker_state",
+                "legendFormat": "{{ integration }} - {{ state }}"
+              }
+            ]
+          },
+          {
+            "title": "Memory Usage",
+            "type": "graph",
+            "targets": [
+              {
+                "expr": "container_memory_working_set_bytes{pod=~\"system-integrations-.*\"}",
+                "legendFormat": "{{ pod }}"
+              }
+            ]
+          },
+          {
+            "title": "CPU Usage",
+            "type": "graph",
+            "targets": [
+              {
+                "expr": "rate(container_cpu_usage_seconds_total{pod=~\"system-integrations-.*\"}[5m])",
+                "legendFormat": "{{ pod }}"
+              }
+            ]
+          },
+          {
+            "title": "Integration Specific Metrics",
+            "type": "table",
+            "targets": [
+              {
+                "expr": "system_integration_requests_total",
+                "format": "table"
+              }
+            ]
+          }
+        ],
+        "time": {
+          "from": "now-1h",
+          "to": "now"
+        },
+        "refresh": "30s"
+      }
+    }
+
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: alertmanager-config-system-integrations
+  namespace: iaros-production
+data:
+  alertmanager.yml: |
+    global:
+      slack_api_url: 'YOUR_SLACK_WEBHOOK_URL'
+    
+    route:
+      group_by: ['alertname', 'integration']
+      group_wait: 10s
+      group_interval: 10s
+      repeat_interval: 1h
+      receiver: 'web.hook'
+      routes:
+      - match:
+          severity: critical
+        receiver: 'critical-alerts'
+      - match:
+          team: platform
+        receiver: 'platform-team'
+      - match:
+          team: marketing
+        receiver: 'marketing-team'
+      - match:
+          team: customer_service
+        receiver: 'customer-service-team'
+    
+    receivers:
+    - name: 'web.hook'
+      slack_configs:
+      - channel: '#iaros-alerts'
+        title: 'IAROS System Integration Alert'
+        text: '{{ range .Alerts }}{{ .Annotations.description }}{{ end }}'
+    
+    - name: 'critical-alerts'
+      slack_configs:
+      - channel: '#iaros-critical'
+        title: 'CRITICAL: IAROS System Integration Alert'
+        text: '{{ range .Alerts }}{{ .Annotations.description }}{{ end }}'
+      pagerduty_configs:
+      - service_key: 'YOUR_PAGERDUTY_SERVICE_KEY'
+        description: '{{ range .Alerts }}{{ .Annotations.summary }}{{ end }}'
+    
+    - name: 'platform-team'
+      slack_configs:
+      - channel: '#platform-team'
+        title: 'Platform Team Alert'
+        text: '{{ range .Alerts }}{{ .Annotations.description }}{{ end }}'
+    
+    - name: 'marketing-team'
+      slack_configs:
+      - channel: '#marketing-team'
+        title: 'Marketing Integration Alert'
+        text: '{{ range .Alerts }}{{ .Annotations.description }}{{ end }}'
+    
+    - name: 'customer-service-team'
+      slack_configs:
+      - channel: '#customer-service'
+        title: 'Customer Service Integration Alert'
+        text: '{{ range .Alerts }}{{ .Annotations.description }}{{ end }}'
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: system-integrations-metrics
+  namespace: iaros-production
+  labels:
+    app: system-integrations
+    metrics: "true"
+spec:
+  selector:
+    app: system-integrations
+  ports:
+  - name: metrics
+    port: 9090
+    targetPort: 9090
+  type: ClusterIP 

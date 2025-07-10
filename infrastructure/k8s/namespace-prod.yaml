@@ -1,0 +1,10 @@
+# namespace-prod.yaml
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: iaros-prod
+  labels:
+    environment: production
+spec:
+  finalizers:
+    - kubernetes

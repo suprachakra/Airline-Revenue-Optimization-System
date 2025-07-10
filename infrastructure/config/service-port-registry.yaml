@@ -1,0 +1,106 @@
+# IAROS Service Port Registry
+# Centralized port allocation for all services and infrastructure components
+# Version: 1.0
+
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: service-port-registry
+  namespace: iaros-prod
+  labels:
+    component: configuration
+    tier: infrastructure
+data:
+  # Core Business Services (8000-8099)
+  business_services: |
+    api-gateway: 8080
+    user-management-service: 8081
+    order-service: 8082
+    offer-service: 8083
+    offer-management-engine: 8084
+    pricing-service: 8085
+    forecasting-service: 8086
+    distribution-service: 8087
+    ancillary-service: 8088
+    promotion-service: 8089
+    network-planning-service: 8090
+    procure-to-pay-service: 8091
+
+  # Advanced Platform Services (8100-8199)
+  platform_services: |
+    customer-experience-engine: 8100
+    customer-intelligence-platform: 8101
+    order-processing-platform: 8102
+    ood-orchestration-engine: 8103
+    advanced-services-integration: 8104
+
+  # Infrastructure Services (9000-9099)
+  infrastructure_services: |
+    prometheus: 9090
+    grafana: 9091
+    jaeger-collector: 9092
+    jaeger-agent: 9093
+    elasticsearch: 9200
+    kibana: 9201
+    fluentd: 9210
+    consul: 9500
+    vault: 9501
+
+  # Database Services (5400-5499)
+  database_services: |
+    postgresql-primary: 5432
+    postgresql-read-replica: 5433
+    postgresql-analytics: 5434
+    timescaledb: 5435
+
+  # Cache & Message Services (6300-6399)
+  cache_message_services: |
+    redis-primary: 6379
+    redis-cache: 6380
+    redis-session: 6381
+    kafka: 6392
+    zookeeper: 6393
+    rabbitmq: 6394
+
+  # Security Services (7000-7099)
+  security_services: |
+    vault-api: 7000
+    oauth-server: 7001
+    certificate-manager: 7002
+    intrusion-detection: 7003
+    threat-scanner: 7004
+
+  # External Integration Ports (8200-8299)
+  external_integrations: |
+    amadeus-api: 8200
+    sabre-api: 8201
+    travelport-api: 8202
+    ndc-gateway: 8203
+    weather-service: 8204
+    social-media-connector: 8205
+
+  # Health Check & Metrics Ports
+  health_metrics: |
+    health-check-port: 8999
+    metrics-port: 9090
+    debug-port: 6060
+    profiling-port: 6061
+
+  # Load Balancer Targets
+  load_balancer_config: |
+    frontend-lb: 80,443
+    api-lb: 8080
+    metrics-lb: 9090
+    database-lb: 5432
+
+  # Port Ranges Reserved
+  port_ranges: |
+    business-services: 8000-8099
+    platform-services: 8100-8199
+    external-integrations: 8200-8299
+    infrastructure: 9000-9099
+    databases: 5400-5499
+    cache-messaging: 6300-6399
+    security: 7000-7099
+    development: 3000-3999
+    testing: 4000-4999 

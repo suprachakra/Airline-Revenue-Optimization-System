@@ -1,0 +1,226 @@
+# Centralized Logging Configuration for IAROS
+# ELK Stack (Elasticsearch, Logstash, Kibana) + Fluentd
+
+---
+# Elasticsearch Configuration
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: elasticsearch-config
+  namespace: logging
+data:
+  elasticsearch.yml: |
+    cluster.name: "iaros-logs"
+    network.host: 0.0.0.0
+    discovery.type: single-node
+    xpack.security.enabled: false
+    xpack.monitoring.collection.enabled: true
+    
+    # Index templates for IAROS services
+    index:
+      number_of_shards: 1
+      number_of_replicas: 1
+      refresh_interval: 1s
+
+---
+# Fluentd Configuration for Log Collection
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: fluentd-config
+  namespace: logging
+data:
+  fluent.conf: |
+    <source>
+      @type tail
+      path /var/log/containers/*iaros*.log
+      pos_file /var/log/fluentd-containers.log.pos
+      tag kubernetes.*
+      read_from_head true
+      format json
+      time_format %Y-%m-%dT%H:%M:%S.%NZ
+    </source>
+
+    # Parse Kubernetes metadata
+    <filter kubernetes.**>
+      @type kubernetes_metadata
+    </filter>
+
+    # Parse IAROS service logs
+    <filter kubernetes.**>
+      @type parser
+      key_name log
+      reserve_data true
+      <parse>
+        @type json
+        time_key timestamp
+        time_format %Y-%m-%dT%H:%M:%S.%NZ
+      </parse>
+    </filter>
+
+    # Add IAROS-specific tags
+    <filter kubernetes.**>
+      @type record_transformer
+      <record>
+        system iaros
+        environment production
+        cluster iaros-prod
+      </record>
+    </filter>
+
+    # Route logs by service
+    <match kubernetes.**api-gateway**>
+      @type elasticsearch
+      host elasticsearch-service.logging.svc.cluster.local
+      port 9200
+      index_name iaros-api-gateway
+      type_name _doc
+      include_tag_key true
+      tag_key @log_name
+      flush_interval 1s
+    </match>
+
+    <match kubernetes.**pricing-service**>
+      @type elasticsearch
+      host elasticsearch-service.logging.svc.cluster.local
+      port 9200
+      index_name iaros-pricing-service
+      type_name _doc
+      include_tag_key true
+      tag_key @log_name
+      flush_interval 1s
+    </match>
+
+    <match kubernetes.**forecasting-service**>
+      @type elasticsearch
+      host elasticsearch-service.logging.svc.cluster.local
+      port 9200
+      index_name iaros-forecasting-service
+      type_name _doc
+      include_tag_key true
+      tag_key @log_name
+      flush_interval 1s
+    </match>
+
+    <match kubernetes.**offer-service**>
+      @type elasticsearch
+      host elasticsearch-service.logging.svc.cluster.local
+      port 9200
+      index_name iaros-offer-service
+      type_name _doc
+      include_tag_key true
+      tag_key @log_name
+      flush_interval 1s
+    </match>
+
+    <match kubernetes.**order-service**>
+      @type elasticsearch
+      host elasticsearch-service.logging.svc.cluster.local
+      port 9200
+      index_name iaros-order-service
+      type_name _doc
+      include_tag_key true
+      tag_key @log_name
+      flush_interval 1s
+    </match>
+
+    <match kubernetes.**distribution-service**>
+      @type elasticsearch
+      host elasticsearch-service.logging.svc.cluster.local
+      port 9200
+      index_name iaros-distribution-service
+      type_name _doc
+      include_tag_key true
+      tag_key @log_name
+      flush_interval 1s
+    </match>
+
+    <match kubernetes.**ancillary-service**>
+      @type elasticsearch
+      host elasticsearch-service.logging.svc.cluster.local
+      port 9200
+      index_name iaros-ancillary-service
+      type_name _doc
+      include_tag_key true
+      tag_key @log_name
+      flush_interval 1s
+    </match>
+
+    <match kubernetes.**user-management-service**>
+      @type elasticsearch
+      host elasticsearch-service.logging.svc.cluster.local
+      port 9200
+      index_name iaros-user-management-service
+      type_name _doc
+      include_tag_key true
+      tag_key @log_name
+      flush_interval 1s
+    </match>
+
+    <match kubernetes.**network-planning-service**>
+      @type elasticsearch
+      host elasticsearch-service.logging.svc.cluster.local
+      port 9200
+      index_name iaros-network-planning-service
+      type_name _doc
+      include_tag_key true
+      tag_key @log_name
+      flush_interval 1s
+    </match>
+
+    <match kubernetes.**promotion-service**>
+      @type elasticsearch
+      host elasticsearch-service.logging.svc.cluster.local
+      port 9200
+      index_name iaros-promotion-service
+      type_name _doc
+      include_tag_key true
+      tag_key @log_name
+      flush_interval 1s
+    </match>
+
+    <match kubernetes.**procure-to-pay-service**>
+      @type elasticsearch
+      host elasticsearch-service.logging.svc.cluster.local
+      port 9200
+      index_name iaros-procure-to-pay-service
+      type_name _doc
+      include_tag_key true
+      tag_key @log_name
+      flush_interval 1s
+    </match>
+
+    # Catch-all for other IAROS logs
+    <match kubernetes.**iaros**>
+      @type elasticsearch
+      host elasticsearch-service.logging.svc.cluster.local
+      port 9200
+      index_name iaros-general
+      type_name _doc
+      include_tag_key true
+      tag_key @log_name
+      flush_interval 1s
+    </match>
+
+---
+# Kibana Configuration
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: kibana-config
+  namespace: logging
+data:
+  kibana.yml: |
+    server.name: "iaros-kibana"
+    server.host: "0.0.0.0"
+    elasticsearch.hosts: ["http://elasticsearch-service.logging.svc.cluster.local:9200"]
+    
+    # IAROS-specific index patterns
+    kibana.index: ".kibana-iaros"
+    
+    # Default index patterns
+    kibana.defaultAppId: "discover"
+    
+    # Logging configuration
+    logging.dest: stdout
+    logging.quiet: false 

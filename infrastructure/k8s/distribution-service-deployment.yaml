@@ -1,0 +1,70 @@
+# distribution-service-deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: distribution-service
+  namespace: iaros-prod
+  labels:
+    app: distribution-service
+    tier: backend
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: distribution-service
+  template:
+    metadata:
+      labels:
+        app: distribution-service
+        tier: backend
+    spec:
+      containers:
+      - name: distribution-service
+        image: iaros/distribution-service:latest
+        ports:
+        - containerPort: 8080
+          name: http
+        env:
+        - name: ENVIRONMENT
+          value: "production"
+        - name: LOG_LEVEL
+          value: "info"
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 8080
+          initialDelaySeconds: 10
+          periodSeconds: 5
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 8080
+          initialDelaySeconds: 30
+          periodSeconds: 10
+        resources:
+          limits:
+            cpu: "500m"
+            memory: "512Mi"
+          requests:
+            cpu: "250m"
+            memory: "256Mi"
+        securityContext:
+          runAsNonRoot: true
+          runAsUser: 1000
+          readOnlyRootFilesystem: true
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: distribution-service-service
+  namespace: iaros-prod
+  labels:
+    app: distribution-service
+spec:
+  selector:
+    app: distribution-service
+  ports:
+  - port: 8080
+    targetPort: 8080
+    name: http
+  type: ClusterIP 

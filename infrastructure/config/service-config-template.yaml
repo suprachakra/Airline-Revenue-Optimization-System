@@ -1,0 +1,246 @@
+# IAROS Service Configuration Template
+# Universal configuration template for all IAROS microservices
+# Version: 2.0 - Enhanced for Enterprise Deployment
+
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: service-config-template
+  namespace: iaros-prod
+  labels:
+    component: configuration
+    tier: service-template
+data:
+  # Server Configuration Template
+  server_config: |
+    server:
+      port: ${SERVICE_PORT:-8080}
+      host: "0.0.0.0"
+      read_timeout: ${READ_TIMEOUT:-30s}
+      write_timeout: ${WRITE_TIMEOUT:-30s}
+      idle_timeout: ${IDLE_TIMEOUT:-120s}
+      max_header_bytes: ${MAX_HEADER_BYTES:-1048576}
+      graceful_shutdown_timeout: ${SHUTDOWN_TIMEOUT:-30s}
+      enable_compression: true
+      rate_limiting:
+        enabled: true
+        requests_per_second: ${RATE_LIMIT:-1000}
+        burst_capacity: ${BURST_CAPACITY:-2000}
+
+  # Security Configuration Template
+  security_config: |
+    security:
+      authentication:
+        jwt:
+          secret_key: "${JWT_SECRET}"
+          expiry: "${JWT_EXPIRY:-24h}"
+          refresh_expiry: "${JWT_REFRESH_EXPIRY:-168h}"
+          issuer: "iaros-platform"
+          audience: "${SERVICE_NAME}"
+        oauth:
+          enabled: ${OAUTH_ENABLED:-true}
+          provider_url: "${OAUTH_PROVIDER_URL}"
+          client_id: "${OAUTH_CLIENT_ID}"
+          scopes: ["openid", "profile", "email"]
+      
+      authorization:
+        rbac_enabled: true
+        default_role: "guest"
+        admin_roles: ["admin", "system-admin"]
+        policy_file: "/etc/security/policies.json"
+      
+      encryption:
+        data_encryption_key: "${DATA_ENCRYPTION_KEY}"
+        field_encryption: true
+        tls:
+          enabled: true
+          cert_file: "/etc/tls/tls.crt"
+          key_file: "/etc/tls/tls.key"
+          min_version: "1.3"
+
+  # Database Configuration Template
+  database_config: |
+    database:
+      primary:
+        host: "${DB_HOST:-postgresql-primary}"
+        port: ${DB_PORT:-5432}
+        user: "${DB_USER}"
+        password: "${DB_PASSWORD}"
+        dbname: "${DB_NAME}"
+        sslmode: "${DB_SSL_MODE:-require}"
+        timezone: "UTC"
+        max_open_conns: ${DB_MAX_OPEN_CONNS:-25}
+        max_idle_conns: ${DB_MAX_IDLE_CONNS:-5}
+        conn_max_lifetime: ${DB_CONN_MAX_LIFETIME:-300s}
+        
+      read_replicas:
+        - host: "${DB_READ_HOST_1:-postgresql-read-replica}"
+          port: ${DB_READ_PORT_1:-5433}
+          weight: 100
+        
+      connection_pool:
+        enabled: true
+        max_pool_size: ${DB_POOL_SIZE:-20}
+        min_pool_size: ${DB_POOL_MIN_SIZE:-2}
+        pool_timeout: ${DB_POOL_TIMEOUT:-30s}
+
+  # Caching Configuration Template
+  cache_config: |
+    cache:
+      redis:
+        primary:
+          host: "${REDIS_HOST:-redis-primary}"
+          port: ${REDIS_PORT:-6379}
+          password: "${REDIS_PASSWORD}"
+          db: ${REDIS_DB:-0}
+          pool_size: ${REDIS_POOL_SIZE:-10}
+          dial_timeout: ${REDIS_DIAL_TIMEOUT:-5s}
+          read_timeout: ${REDIS_READ_TIMEOUT:-3s}
+          write_timeout: ${REDIS_WRITE_TIMEOUT:-3s}
+          pool_timeout: ${REDIS_POOL_TIMEOUT:-4s}
+        
+        session:
+          host: "${REDIS_SESSION_HOST:-redis-session}"
+          port: ${REDIS_SESSION_PORT:-6381}
+          db: 1
+        
+      local_cache:
+        enabled: true
+        max_size: ${LOCAL_CACHE_SIZE:-1000}
+        ttl: ${LOCAL_CACHE_TTL:-300s}
+        cleanup_interval: ${LOCAL_CACHE_CLEANUP:-60s}
+
+  # Messaging Configuration Template
+  messaging_config: |
+    messaging:
+      kafka:
+        brokers: ["${KAFKA_BROKER_1:-kafka:6392}"]
+        topics:
+          events: "${SERVICE_NAME}-events"
+          commands: "${SERVICE_NAME}-commands"
+          dlq: "${SERVICE_NAME}-dlq"
+        
+        producer:
+          acks: "all"
+          retries: 3
+          batch_size: 16384
+          linger_ms: 1
+          compression_type: "snappy"
+        
+        consumer:
+          group_id: "${SERVICE_NAME}-group"
+          auto_offset_reset: "earliest"
+          enable_auto_commit: false
+          max_poll_records: 500
+
+  # Observability Configuration Template
+  observability_config: |
+    observability:
+      logging:
+        level: "${LOG_LEVEL:-info}"
+        format: "${LOG_FORMAT:-json}"
+        output: "${LOG_OUTPUT:-stdout}"
+        structured: true
+        include_caller: true
+        correlation_id_header: "X-Correlation-ID"
+        
+      metrics:
+        enabled: true
+        port: ${METRICS_PORT:-9090}
+        path: "/metrics"
+        namespace: "iaros"
+        subsystem: "${SERVICE_NAME}"
+        
+      tracing:
+        enabled: true
+        jaeger:
+          agent_host: "${JAEGER_AGENT_HOST:-jaeger-agent}"
+          agent_port: ${JAEGER_AGENT_PORT:-6831}
+          service_name: "${SERVICE_NAME}"
+          sampling_rate: ${TRACING_SAMPLING_RATE:-0.1}
+        
+      health_checks:
+        enabled: true
+        port: ${HEALTH_CHECK_PORT:-8999}
+        readiness_path: "/health/ready"
+        liveness_path: "/health/live"
+        startup_path: "/health/startup"
+
+  # Business Logic Configuration Template
+  business_config: |
+    business:
+      circuit_breaker:
+        enabled: true
+        failure_threshold: ${CIRCUIT_BREAKER_THRESHOLD:-5}
+        recovery_timeout: ${CIRCUIT_BREAKER_RECOVERY:-30s}
+        max_requests: ${CIRCUIT_BREAKER_MAX_REQUESTS:-3}
+        
+      retry_policy:
+        enabled: true
+        max_attempts: ${RETRY_MAX_ATTEMPTS:-3}
+        initial_delay: ${RETRY_INITIAL_DELAY:-1s}
+        max_delay: ${RETRY_MAX_DELAY:-30s}
+        backoff_multiplier: ${RETRY_BACKOFF_MULTIPLIER:-2.0}
+        
+      timeout_policy:
+        default_timeout: ${DEFAULT_TIMEOUT:-30s}
+        long_running_timeout: ${LONG_RUNNING_TIMEOUT:-300s}
+        
+      feature_flags:
+        enabled: true
+        provider: "${FEATURE_FLAG_PROVIDER:-consul}"
+        refresh_interval: ${FEATURE_FLAG_REFRESH:-60s}
+
+  # External Services Configuration Template
+  external_services_config: |
+    external_services:
+      service_discovery:
+        consul:
+          enabled: true
+          address: "${CONSUL_ADDRESS:-consul:9500}"
+          datacenter: "${CONSUL_DATACENTER:-dc1}"
+          health_check_interval: "10s"
+          
+      api_clients:
+        default_timeout: ${API_CLIENT_TIMEOUT:-30s}
+        max_retries: ${API_CLIENT_RETRIES:-3}
+        base_urls:
+          user_management: "${USER_MGMT_URL:-http://user-management-service:8081}"
+          pricing: "${PRICING_URL:-http://pricing-service:8085}"
+          offers: "${OFFERS_URL:-http://offer-service:8083}"
+          orders: "${ORDERS_URL:-http://order-service:8082}"
+          forecasting: "${FORECASTING_URL:-http://forecasting-service:8086}"
+
+  # Development & Testing Configuration Template
+  development_config: |
+    development:
+      debug:
+        enabled: ${DEBUG_ENABLED:-false}
+        port: ${DEBUG_PORT:-6060}
+        profiling_enabled: ${PROFILING_ENABLED:-false}
+        
+      testing:
+        mock_external_services: ${MOCK_EXTERNAL:-false}
+        test_data_enabled: ${TEST_DATA_ENABLED:-false}
+        
+      hot_reload:
+        enabled: ${HOT_RELOAD_ENABLED:-false}
+        watch_paths: ["/app"]
+
+  # Production Optimization Template
+  production_config: |
+    production:
+      performance:
+        goroutine_pool_size: ${GOROUTINE_POOL_SIZE:-100}
+        worker_count: ${WORKER_COUNT:-10}
+        queue_size: ${QUEUE_SIZE:-1000}
+        
+      resource_limits:
+        max_memory: "${MAX_MEMORY:-512Mi}"
+        max_cpu: "${MAX_CPU:-1000m}"
+        
+      scaling:
+        min_replicas: ${MIN_REPLICAS:-2}
+        max_replicas: ${MAX_REPLICAS:-10}
+        target_cpu_utilization: ${TARGET_CPU:-70}
+        target_memory_utilization: ${TARGET_MEMORY:-80} 

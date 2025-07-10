@@ -1,0 +1,210 @@
+# IAROS Centralized Alert Rules
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: iaros-alert-rules
+  namespace: monitoring
+data:
+  iaros-alerts.yml: |
+    groups:
+    - name: iaros.service.health
+      interval: 30s
+      rules:
+      - alert: ServiceDown
+        expr: up{job=~"iaros-.*"} == 0
+        for: 1m
+        labels:
+          severity: critical
+          service: "{{ $labels.service }}"
+        annotations:
+          summary: "IAROS service {{ $labels.service }} is down"
+          description: "Service {{ $labels.service }} has been down for more than 1 minute"
+
+      - alert: HighErrorRate
+        expr: |
+          (
+            sum(rate(http_requests_total{job=~"iaros-.*",status=~"5.*"}[5m])) by (service) /
+            sum(rate(http_requests_total{job=~"iaros-.*"}[5m])) by (service)
+          ) * 100 > 5
+        for: 5m
+        labels:
+          severity: warning
+          service: "{{ $labels.service }}"
+        annotations:
+          summary: "High error rate in {{ $labels.service }}"
+          description: "Error rate is {{ $value }}% for service {{ $labels.service }}"
+
+      - alert: HighResponseTime
+        expr: |
+          histogram_quantile(0.95, 
+            sum(rate(http_request_duration_seconds_bucket{job=~"iaros-.*"}[5m])) by (service, le)
+          ) > 1
+        for: 5m
+        labels:
+          severity: warning
+          service: "{{ $labels.service }}"
+        annotations:
+          summary: "High response time in {{ $labels.service }}"
+          description: "95th percentile response time is {{ $value }}s for service {{ $labels.service }}"
+
+    - name: iaros.resource.utilization
+      interval: 30s
+      rules:
+      - alert: HighCPUUsage
+        expr: |
+          sum(rate(container_cpu_usage_seconds_total{namespace="iaros-prod"}[5m])) by (pod) * 100 > 80
+        for: 10m
+        labels:
+          severity: warning
+          pod: "{{ $labels.pod }}"
+        annotations:
+          summary: "High CPU usage in pod {{ $labels.pod }}"
+          description: "CPU usage is {{ $value }}% for pod {{ $labels.pod }}"
+
+      - alert: HighMemoryUsage
+        expr: |
+          (
+            sum(container_memory_usage_bytes{namespace="iaros-prod"}) by (pod) /
+            sum(container_spec_memory_limit_bytes{namespace="iaros-prod"}) by (pod)
+          ) * 100 > 85
+        for: 5m
+        labels:
+          severity: warning
+          pod: "{{ $labels.pod }}"
+        annotations:
+          summary: "High memory usage in pod {{ $labels.pod }}"
+          description: "Memory usage is {{ $value }}% for pod {{ $labels.pod }}"
+
+      - alert: PodCrashLooping
+        expr: rate(kube_pod_container_status_restarts_total{namespace="iaros-prod"}[5m]) > 0
+        for: 5m
+        labels:
+          severity: critical
+          pod: "{{ $labels.pod }}"
+        annotations:
+          summary: "Pod {{ $labels.pod }} is crash looping"
+          description: "Pod {{ $labels.pod }} has restarted {{ $value }} times in the last 5 minutes"
+
+    - name: iaros.pricing.service
+      interval: 30s
+      rules:
+      - alert: PricingFallbackHigh
+        expr: rate(pricing_fallback_total[5m]) > 0.1
+        for: 5m
+        labels:
+          severity: warning
+          service: pricing-service
+        annotations:
+          summary: "High pricing fallback rate"
+          description: "Pricing service fallback rate is {{ $value }} events/sec"
+
+      - alert: PricingCacheHitLow
+        expr: pricing_cache_hit_rate < 80
+        for: 10m
+        labels:
+          severity: warning
+          service: pricing-service
+        annotations:
+          summary: "Low pricing cache hit rate"
+          description: "Pricing cache hit rate is {{ $value }}%"
+
+      - alert: PricingResponseTimeCritical
+        expr: |
+          histogram_quantile(0.95, 
+            sum(rate(http_request_duration_seconds_bucket{job="iaros-pricing-service"}[5m])) by (le)
+          ) > 0.2
+        for: 5m
+        labels:
+          severity: critical
+          service: pricing-service
+        annotations:
+          summary: "Pricing service response time critical"
+          description: "P95 response time is {{ $value }}s (SLA: <200ms)"
+
+    - name: iaros.forecasting.service
+      interval: 30s
+      rules:
+      - alert: ForecastingModelDrift
+        expr: increase(forecasting_drift_events_total[1h]) > 0
+        for: 0m
+        labels:
+          severity: warning
+          service: forecasting-service
+        annotations:
+          summary: "Forecasting model drift detected"
+          description: "Model drift detected in forecasting service - retraining may be required"
+
+      - alert: ForecastingAccuracyLow
+        expr: forecasting_model_accuracy < 80
+        for: 15m
+        labels:
+          severity: warning
+          service: forecasting-service
+        annotations:
+          summary: "Low forecasting accuracy"
+          description: "Forecasting model accuracy is {{ $value }}% (threshold: 80%)"
+
+    - name: iaros.api.gateway
+      interval: 30s
+      rules:
+      - alert: APIGatewayRateLimitHigh
+        expr: rate(gateway_rate_limit_hits_total[5m]) > 10
+        for: 5m
+        labels:
+          severity: warning
+          service: api-gateway
+        annotations:
+          summary: "High rate limit hits on API Gateway"
+          description: "Rate limit hits: {{ $value }} hits/sec"
+
+      - alert: CircuitBreakerOpen
+        expr: gateway_circuit_breaker_state > 0
+        for: 1m
+        labels:
+          severity: critical
+          service: api-gateway
+        annotations:
+          summary: "Circuit breaker is open"
+          description: "Circuit breaker is open for service {{ $labels.target_service }}"
+
+    - name: iaros.database
+      interval: 30s
+      rules:
+      - alert: DatabaseConnectionsHigh
+        expr: database_connections_active / database_connections_max > 0.8
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High database connection usage"
+          description: "Database connection usage is {{ $value | humanizePercentage }}"
+
+      - alert: DatabaseSlowQueries
+        expr: mysql_slow_queries > 10
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High number of slow database queries"
+          description: "{{ $value }} slow queries detected"
+
+    - name: iaros.cache
+      interval: 30s
+      rules:
+      - alert: RedisCacheHitRateLow
+        expr: redis_cache_hit_rate < 70
+        for: 10m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Low Redis cache hit rate"
+          description: "Redis cache hit rate is {{ $value }}%"
+
+      - alert: RedisMemoryHigh
+        expr: redis_memory_usage > 85
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High Redis memory usage"
+          description: "Redis memory usage is {{ $value }}%" 

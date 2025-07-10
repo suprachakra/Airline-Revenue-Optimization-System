@@ -1,0 +1,325 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: system-integrations
+  namespace: iaros-production
+  labels:
+    app: system-integrations
+    version: v1.0.0
+    component: integration-layer
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: system-integrations
+  template:
+    metadata:
+      labels:
+        app: system-integrations
+        version: v1.0.0
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "9090"
+        prometheus.io/path: "/metrics"
+    spec:
+      containers:
+      - name: integration-manager
+        image: iaros/system-integrations:v1.0.0
+        ports:
+        - containerPort: 8080
+          name: http
+        - containerPort: 9090
+          name: metrics
+        env:
+        - name: ENV
+          value: "production"
+        - name: LOG_LEVEL
+          value: "info"
+        - name: SABRE_API_URL
+          valueFrom:
+            secretKeyRef:
+              name: integration-secrets
+              key: sabre-api-url
+        - name: SABRE_API_KEY
+          valueFrom:
+            secretKeyRef:
+              name: integration-secrets
+              key: sabre-api-key
+        - name: SITA_API_URL
+          valueFrom:
+            secretKeyRef:
+              name: integration-secrets
+              key: sita-api-url
+        - name: SITA_API_KEY
+          valueFrom:
+            secretKeyRef:
+              name: integration-secrets
+              key: sita-api-key
+        - name: WEATHER_API_URL
+          valueFrom:
+            secretKeyRef:
+              name: integration-secrets
+              key: weather-api-url
+        - name: WEATHER_API_KEY
+          valueFrom:
+            secretKeyRef:
+              name: integration-secrets
+              key: weather-api-key
+        - name: SOCIAL_MEDIA_TOKENS
+          valueFrom:
+            secretKeyRef:
+              name: integration-secrets
+              key: social-media-tokens
+        - name: SURVEY_PLATFORM_KEY
+          valueFrom:
+            secretKeyRef:
+              name: integration-secrets
+              key: survey-platform-key
+        resources:
+          limits:
+            cpu: 2000m
+            memory: 4Gi
+          requests:
+            cpu: 1000m
+            memory: 2Gi
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 8080
+          initialDelaySeconds: 30
+          periodSeconds: 10
+          timeoutSeconds: 5
+          failureThreshold: 3
+        readinessProbe:
+          httpGet:
+            path: /ready
+            port: 8080
+          initialDelaySeconds: 5
+          periodSeconds: 5
+          timeoutSeconds: 3
+          failureThreshold: 3
+        volumeMounts:
+        - name: config-volume
+          mountPath: /etc/config
+        - name: logs-volume
+          mountPath: /var/logs
+      volumes:
+      - name: config-volume
+        configMap:
+          name: system-integrations-config
+      - name: logs-volume
+        emptyDir: {}
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+        fsGroup: 1000
+      serviceAccountName: system-integrations
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: system-integrations-service
+  namespace: iaros-production
+  labels:
+    app: system-integrations
+spec:
+  selector:
+    app: system-integrations
+  ports:
+  - name: http
+    port: 80
+    targetPort: 8080
+    protocol: TCP
+  - name: metrics
+    port: 9090
+    targetPort: 9090
+    protocol: TCP
+  type: ClusterIP
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: system-integrations-config
+  namespace: iaros-production
+data:
+  config.yaml: |
+    server:
+      port: 8080
+      read_timeout: 30s
+      write_timeout: 30s
+      idle_timeout: 120s
+    
+    integrations:
+      sabre:
+        enabled: true
+        fallback_enabled: true
+        timeout: 10s
+        retry_attempts: 3
+        circuit_breaker:
+          failure_threshold: 5
+          success_threshold: 3
+          timeout: 30s
+      
+      sita_bag_manager:
+        enabled: true
+        websocket_enabled: true
+        timeout: 5s
+        retry_attempts: 2
+        circuit_breaker:
+          failure_threshold: 3
+          success_threshold: 2
+          timeout: 20s
+      
+      weather_data:
+        enabled: true
+        cache_ttl: 300s
+        timeout: 3s
+        retry_attempts: 2
+        circuit_breaker:
+          failure_threshold: 3
+          success_threshold: 2
+          timeout: 15s
+      
+      social_media:
+        enabled: true
+        platforms: ["twitter", "facebook", "instagram"]
+        timeout: 10s
+        retry_attempts: 1
+        circuit_breaker:
+          failure_threshold: 2
+          success_threshold: 2
+          timeout: 30s
+      
+      survey_platform:
+        enabled: true
+        timeout: 8s
+        retry_attempts: 2
+        circuit_breaker:
+          failure_threshold: 3
+          success_threshold: 2
+          timeout: 25s
+    
+    monitoring:
+      enabled: true
+      metrics_interval: 30s
+      prometheus_endpoint: /metrics
+    
+    logging:
+      level: info
+      format: json
+      output: stdout
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: integration-secrets
+  namespace: iaros-production
+type: Opaque
+data:
+  # Base64 encoded secrets (replace with actual values)
+  sabre-api-url: aHR0cHM6Ly9hcGkuc2FicmUuY29t
+  sabre-api-key: U0FCUkVfQVBJX0tFWV9QTEFDRUhPTERFUg==
+  sita-api-url: aHR0cHM6Ly9hcGkuc2l0YS5hZXJv
+  sita-api-key: U0lUQV9BUElfS0VZX1BMQUNFSE9MREVSCg==
+  weather-api-url: aHR0cHM6Ly9hcGkud2VhdGhlci5jb20=
+  weather-api-key: V0VBVEhFUl9BUElfS0VZX1BMQUNFSE9MREVSCg==
+  social-media-tokens: U09DSUFMX01FRElBX1RPS0VOU19QTEFDRUhPTERFUgo=
+  survey-platform-key: U1VSVkVZX1BMQVRGT1JNX0tFWV9QTEFDRUhPTERFUgo=
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: system-integrations
+  namespace: iaros-production
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: system-integrations-role
+rules:
+- apiGroups: [""]
+  resources: ["pods", "services", "endpoints"]
+  verbs: ["get", "list", "watch"]
+- apiGroups: ["apps"]
+  resources: ["deployments", "replicasets"]
+  verbs: ["get", "list", "watch"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: system-integrations-binding
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: system-integrations-role
+subjects:
+- kind: ServiceAccount
+  name: system-integrations
+  namespace: iaros-production
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: system-integrations-ingress
+  namespace: iaros-production
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    nginx.ingress.kubernetes.io/rewrite-target: /
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/rate-limit: "100"
+    nginx.ingress.kubernetes.io/rate-limit-window: "1m"
+spec:
+  tls:
+  - hosts:
+    - integrations.iaros.ai
+    secretName: iaros-tls-secret
+  rules:
+  - host: integrations.iaros.ai
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: system-integrations-service
+            port:
+              number: 80
+---
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: system-integrations-hpa
+  namespace: iaros-production
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: system-integrations
+  minReplicas: 3
+  maxReplicas: 10
+  metrics:
+  - type: Resource
+    resource:
+      name: cpu
+      target:
+        type: Utilization
+        averageUtilization: 70
+  - type: Resource
+    resource:
+      name: memory
+      target:
+        type: Utilization
+        averageUtilization: 80
+  behavior:
+    scaleUp:
+      stabilizationWindowSeconds: 60
+      policies:
+      - type: Percent
+        value: 100
+        periodSeconds: 15
+    scaleDown:
+      stabilizationWindowSeconds: 300
+      policies:
+      - type: Percent
+        value: 10
+        periodSeconds: 60 

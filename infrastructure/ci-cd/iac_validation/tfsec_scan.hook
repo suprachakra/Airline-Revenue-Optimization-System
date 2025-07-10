@@ -1,0 +1,9 @@
+#!/bin/bash
+# tfsec_scan.hook - Pre-commit hook for Terraform security scans.
+echo "Running tfsec security scan..."
+tfsec .
+if [ $? -ne 0 ]; then
+  echo "Terraform security scan failed. Commit aborted."
+  exit 1
+fi
+echo "tfsec scan passed."

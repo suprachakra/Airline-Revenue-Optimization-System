@@ -1,0 +1,18 @@
+version: '3.8'
+services:
+  api_gateway:
+    image: iaros/api_gateway:v4.2
+    ports:
+      - "8443:8443"
+    depends_on:
+      - pricing_service
+      - forecasting_service
+    environment:
+      - APP_MODE=production
+  pricing_service:
+    image: iaros/pricing_service:v4.2
+    environment:
+      - APP_MODE=production
+  forecasting_service:
+    image: iaros/forecasting_service:v4.0
+  # Additional service definitions...
