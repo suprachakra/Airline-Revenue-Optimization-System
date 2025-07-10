@@ -1,0 +1,7 @@
+# example_rate_limiter.yaml
+# Configuration for per-service rate limiting.
+service: pricing_service
+limits:
+  global: 10000  # requests per minute
+  per_ip: 500
+  burst: 100
