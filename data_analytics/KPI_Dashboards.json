@@ -1,0 +1,424 @@
+{
+    "dashboard": {
+        "title": "AROS Airline Operations KPI Dashboard Suite",
+        "version": "2.5.7",
+        "last_updated": "2025-10-10",
+        "release_status": "Production",
+        "description": "Enterprise-grade real-time monitoring of critical airline KPIs to drive proactive decision-making across operational units",
+        "technical_owner": "Enterprise Data & Analytics",
+        "business_owner": "Revenue Management",
+        
+        "platform_specifications": {
+            "primary_tools": {
+                "executive_view": "Power BI Premium",
+                "operational_view": "Grafana Enterprise",
+                "analytical_view": "Looker Embedded Analytics"
+            },
+            "data_refresh_rates": {
+                "financial_metrics": "15 minutes",
+                "operational_metrics": "5 minutes",
+                "customer_metrics": "30 minutes",
+                "forecast_metrics": "60 minutes"
+            },
+            "accessibility_requirements": {
+                "mobile_responsive": true,
+                "offline_capability": true,
+                "screen_reader_compatible": true,
+                "color_blindness_optimized": true
+            }
+        },
+        
+        "KPIs": [
+            {
+                "name": "Revenue per Available Seat Kilometer (RASK)",
+                "id": "kpi_rask_001",
+                "owner": "Finance",
+                "category": "Financial",
+                "priority": "Critical",
+                "description": "Tracks revenue generated per available seat kilometer, normalized across fleet types",
+                "business_impact": "Primary revenue efficiency indicator for route profitability analysis",
+                
+                "data_specifications": {
+                    "calculation": "SUM(Flights[Total Revenue]) / SUM(Flights[Available Seat Kilometers])",
+                    "dimensions": ["Route", "Aircraft Type", "Booking Class", "Time Period"],
+                    "source_tables": ["RevenueData", "FlightOperations", "InventoryManagement"],
+                    "refresh_frequency": "15 minutes",
+                    "historical_comparison_periods": ["Previous Day", "Previous Week", "Previous Month", "Previous Year"]
+                },
+                
+                "visualization": {
+                    "primary_type": "line_chart",
+                    "secondary_types": ["heat_map", "small_multiples"],
+                    "color_scheme": "corporate_blue_scale",
+                    "trend_indicators": true,
+                    "benchmarks": ["Target", "Budget", "Previous Year"],
+                    "drill_down_hierarchy": ["Network", "Region", "Country", "Route"],
+                    "annotations": {
+                        "price_changes": true,
+                        "competitive_events": true,
+                        "operational_disruptions": true
+                    }
+                },
+                
+                "alerts": {
+                    "thresholds": {
+                        "critical_low": "15% below target",
+                        "warning_low": "5% below target",
+                        "warning_high": "10% above target"
+                    },
+                    "notification_channels": ["Email", "SMS", "Dashboard", "Teams"],
+                    "responsible_teams": ["Revenue Management", "Network Planning"]
+                }
+            },
+            
+            {
+                "name": "Load Factor",
+                "id": "kpi_lf_002",
+                "owner": "Revenue Management",
+                "category": "Operational",
+                "priority": "Critical",
+                "description": "Percentage of available seating capacity that is actually utilized",
+                "business_impact": "Key indicator of capacity utilization efficiency and revenue optimization",
+                
+                "data_specifications": {
+                    "calculation": "SUM(Flights[Revenue Passenger Kilometers]) / SUM(Flights[Available Seat Kilometers]) * 100",
+                    "dimensions": ["Route", "Aircraft Type", "Booking Class", "Time Period", "Fare Basis"],
+                    "source_tables": ["BookingData", "FlightOperations", "CapacityAllocation"],
+                    "refresh_frequency": "5 minutes",
+                    "historical_comparison_periods": ["Previous Day", "Previous Week", "Previous Month", "Previous Year"]
+                },
+                
+                "visualization": {
+                    "primary_type": "gauge_chart",
+                    "secondary_types": ["heat_map", "trend_line"],
+                    "color_scheme": "sequential_green_red",
+                    "trend_indicators": true,
+                    "benchmarks": ["Target", "Break-Even", "Industry Average"],
+                    "drill_down_hierarchy": ["Network", "Region", "Country", "Route", "Flight Number"],
+                    "annotations": {
+                        "capacity_changes": true,
+                        "competitive_events": true,
+                        "seasonal_factors": true
+                    }
+                },
+                
+                "alerts": {
+                    "thresholds": {
+                        "critical_low": "Below 65%",
+                        "warning_low": "Below 75%",
+                        "optimal_range": "80-90%",
+                        "warning_high": "Above 95%"
+                    },
+                    "notification_channels": ["Email", "SMS", "Dashboard", "Teams"],
+                    "responsible_teams": ["Revenue Management", "Network Planning", "Operations Control"]
+                }
+            },
+            
+            {
+                "name": "Forecast Accuracy (MAPE)",
+                "id": "kpi_mape_003",
+                "owner": "Data Science",
+                "category": "Forecasting",
+                "priority": "High",
+                "description": "Mean Absolute Percentage Error for demand forecasting by route and class",
+                "business_impact": "Critical for inventory allocation and revenue optimization decisions",
+                
+                "data_specifications": {
+                    "calculation": "AVG(ABS((Forecast[Demand] - Actual[Demand]) / Actual[Demand]) * 100)",
+                    "dimensions": ["Route", "Booking Class", "Time to Departure", "Seasonality"],
+                    "source_tables": ["ForecastingEngine", "BookingData", "HistoricalDemand"],
+                    "refresh_frequency": "60 minutes",
+                    "historical_comparison_periods": ["Previous Week", "Previous Month", "Previous Quarter"]
+                },
+                
+                "visualization": {
+                    "primary_type": "bullet_chart",
+                    "secondary_types": ["box_plot", "error_band_timeline"],
+                    "color_scheme": "diverging_accuracy_scale",
+                    "trend_indicators": true,
+                    "benchmarks": ["Target Accuracy", "Previous Period", "Model Baseline"],
+                    "drill_down_hierarchy": ["Forecast Model", "Route Group", "Route", "Booking Class"],
+                    "annotations": {
+                        "model_updates": true,
+                        "anomalous_events": true,
+                        "data_quality_issues": true
+                    }
+                },
+                
+                "alerts": {
+                    "thresholds": {
+                        "critical_high": "Above 15% MAPE",
+                        "warning_high": "Above 10% MAPE",
+                        "optimal_range": "Below 5% MAPE"
+                    },
+                    "notification_channels": ["Email", "Dashboard", "Teams", "JIRA"],
+                    "responsible_teams": ["Data Science", "Revenue Management", "Operations Research"]
+                }
+            },
+            
+            {
+                "name": "On-Time Performance (OTP)",
+                "id": "kpi_otp_004",
+                "owner": "Operations",
+                "category": "Operational",
+                "priority": "Critical",
+                "description": "Percentage of flights arriving within 15 minutes of scheduled time",
+                "business_impact": "Key indicator of operational reliability and customer satisfaction driver",
+                
+                "data_specifications": {
+                    "calculation": "COUNT(Flights[OnTime]) / COUNT(Flights[Total]) * 100",
+                    "dimensions": ["Route", "Aircraft Type", "Departure Airport", "Arrival Airport", "Time of Day"],
+                    "source_tables": ["FlightOperations", "ScheduleData", "DelayReporting"],
+                    "refresh_frequency": "5 minutes",
+                    "historical_comparison_periods": ["Previous Day", "Previous Week", "Previous Month"]
+                },
+                
+                "visualization": {
+                    "primary_type": "scorecard",
+                    "secondary_types": ["pareto_chart", "geographic_map"],
+                    "color_scheme": "sequential_performance_scale",
+                    "trend_indicators": true,
+                    "benchmarks": ["Target", "Industry Average", "Previous Year"],
+                    "drill_down_hierarchy": ["Network", "Region", "Airport", "Flight Number"],
+                    "annotations": {
+                        "weather_events": true,
+                        "air_traffic_control": true,
+                        "maintenance_issues": true,
+                        "operational_disruptions": true
+                    }
+                },
+                
+                "alerts": {
+                    "thresholds": {
+                        "critical_low": "Below 80%",
+                        "warning_low": "Below 85%",
+                        "optimal_range": "Above 90%"
+                    },
+                    "notification_channels": ["Email", "SMS", "Dashboard", "Operations Center Display"],
+                    "responsible_teams": ["Operations Control", "Airport Management", "Flight Operations"]
+                }
+            },
+            
+            {
+                "name": "Customer Satisfaction (NPS/CSAT)",
+                "id": "kpi_csat_005",
+                "owner": "Customer Experience",
+                "category": "Customer",
+                "priority": "High",
+                "description": "Composite metric tracking Net Promoter Score and Customer Satisfaction ratings",
+                "business_impact": "Leading indicator of customer loyalty and revenue retention",
+                
+                "data_specifications": {
+                    "calculation": "NPS: (COUNT(Promoters) - COUNT(Detractors)) / COUNT(Total Respondents) * 100; CSAT: AVG(Satisfaction Rating)",
+                    "dimensions": ["Route", "Cabin Class", "Customer Tier", "Journey Type", "Touchpoint"],
+                    "source_tables": ["SurveyData", "CustomerFeedback", "SocialMediaSentiment", "LoyaltyProgram"],
+                    "refresh_frequency": "30 minutes",
+                    "historical_comparison_periods": ["Previous Week", "Previous Month", "Previous Quarter", "Previous Year"]
+                },
+                
+                "visualization": {
+                    "primary_type": "composite_scorecard",
+                    "secondary_types": ["radar_chart", "sentiment_timeline", "word_cloud"],
+                    "color_scheme": "satisfaction_spectrum",
+                    "trend_indicators": true,
+                    "benchmarks": ["Target", "Industry Average", "Competitor Average"],
+                    "drill_down_hierarchy": ["Journey Stage", "Service Element", "Staff Group", "Individual Flight"],
+                    "annotations": {
+                        "service_changes": true,
+                        "product_launches": true,
+                        "promotional_events": true
+                    }
+                },
+                
+                "alerts": {
+                    "thresholds": {
+                        "critical_low": "NPS < 20 or CSAT < 3.5",
+                        "warning_low": "NPS < 40 or CSAT < 4.0",
+                        "optimal_range": "NPS > 50 and CSAT > 4.2"
+                    },
+                    "notification_channels": ["Email", "Dashboard", "Teams", "Executive Briefing"],
+                    "responsible_teams": ["Customer Experience", "Service Delivery", "Product Development"]
+                }
+            }
+        ],
+        
+        "system_monitoring": {
+            "API_latency": {
+                "threshold": "200ms (95th percentile)",
+                "measurement_frequency": "Continuous",
+                "fallback_action": "Trigger auto-scaling and cache fallback",
+                "responsible_team": "Cloud Platform Engineering",
+                "alert_channels": ["PagerDuty", "DevOps Dashboard", "Teams"]
+            },
+            "forecast_error_MAPE": {
+                "threshold": "10%",
+                "measurement_frequency": "Hourly",
+                "fallback_action": "Initiate automated retraining and use cached forecasts",
+                "responsible_team": "Data Science",
+                "alert_channels": ["Email", "JIRA", "Teams"]
+            },
+            "load_factor_OTP_deviation": {
+                "threshold": "5% deviation from 7-day trailing average",
+                "measurement_frequency": "15 minutes",
+                "fallback_action": "Trigger manual review alerts via SIEM",
+                "responsible_team": "Operations Analytics",
+                "alert_channels": ["Operations Center Display", "Email", "SMS"]
+            },
+            "data_freshness": {
+                "threshold": "Data age > refresh frequency + 10 minutes",
+                "measurement_frequency": "Continuous",
+                "fallback_action": "Display staleness indicators and use last known good data",
+                "responsible_team": "Data Engineering",
+                "alert_channels": ["Dashboard Indicator", "Email", "Teams"]
+            }
+        },
+        
+        "access_controls": {
+            "role_based_access": {
+                "executive_level": ["All KPIs, network level, no drill-down"],
+                "director_level": ["All KPIs, regional level, limited drill-down"],
+                "manager_level": ["Department KPIs, full drill-down"],
+                "analyst_level": ["Department KPIs, full drill-down, raw data access"]
+            },
+            "authentication_method": "Corporate SSO with MFA",
+            "data_classification": "Business Confidential",
+            "export_controls": {
+                "allowed_formats": ["PDF", "Excel", "PowerPoint"],
+                "watermarking": true,
+                "audit_logging": true
+            }
+        },
+        
+        "reporting_capabilities": {
+            "scheduled_reports": {
+                "daily_operational_summary": {
+                    "recipients": ["Operations Leadership"],
+                    "delivery_time": "06:00 local time",
+                    "format": "PDF, Excel",
+                    "content": ["OTP", "Load Factor", "RASK Summary"]
+                },
+                "weekly_performance_review": {
+                    "recipients": ["Department Heads"],
+                    "delivery_time": "Monday 08:00 local time",
+                    "format": "PowerPoint, Excel",
+                    "content": ["All KPIs with Week-over-Week comparison"]
+                },
+                "monthly_executive_summary": {
+                    "recipients": ["Executive Committee"],
+                    "delivery_time": "1st of month 07:00 local time",
+                    "format": "Executive Dashboard PDF",
+                    "content": ["KPI Summary", "Trend Analysis", "Recommendation Highlights"]
+                }
+            },
+            "ad_hoc_analysis": {
+                "self_service_capabilities": true,
+                "export_formats": ["Excel", "CSV", "PDF", "PowerPoint"],
+                "collaboration_features": ["Shared Insights", "Annotations", "Action Items"]
+            },
+            "embedded_analytics": {
+                "operational_systems": true,
+                "mobile_applications": true,
+                "partner_portals": false
+            }
+        },
+        
+        "technical_architecture": {
+            "data_sources": {
+                "reservation_system": {
+                    "connection_type": "API (REST)",
+                    "refresh_method": "Event-driven + 15-minute batch",
+                    "data_latency": "<1 minute"
+                },
+                "operations_database": {
+                    "connection_type": "Direct Database Connection",
+                    "refresh_method": "5-minute incremental",
+                    "data_latency": "<5 minutes"
+                },
+                "crm_system": {
+                    "connection_type": "API (GraphQL)",
+                    "refresh_method": "30-minute batch",
+                    "data_latency": "<30 minutes"
+                },
+                "financial_system": {
+                    "connection_type": "Batch ETL",
+                    "refresh_method": "Hourly batch",
+                    "data_latency": "<60 minutes"
+                }
+            },
+            "data_processing": {
+                "etl_platform": "Azure Data Factory",
+                "processing_engine": "Databricks",
+                "data_warehouse": "Snowflake",
+                "real_time_streaming": "Azure Event Hubs"
+            },
+            "visualization_layer": {
+                "front_end_framework": "React with D3.js",
+                "caching_strategy": "Redis with 5-minute expiry",
+                "rendering_approach": "Server-side for initial load, client-side for interactions"
+            },
+            "deployment_model": {
+                "environments": ["Development", "QA", "Production"],
+                "cloud_provider": "Azure",
+                "update_frequency": "Bi-weekly release cycle",
+                "scaling_strategy": "Auto-scaling based on user load"
+            }
+        },
+        
+        "departmental_validation": {
+            "product_management": {
+                "validation_status": "Approved",
+                "validator": "Sarah Chen, SVP Product Management",
+                "validation_date": "2025-03-28",
+                "key_focus_areas": ["User Experience", "Value Proposition", "Feature Completeness"],
+                "comments": "All critical product requirements have been met. User testing shows 97% satisfaction with dashboard usability."
+            },
+            "design": {
+                "validation_status": "Approved",
+                "validator": "Miguel Rodriguez, SVP Design",
+                "validation_date": "2025-03-29",
+                "key_focus_areas": ["Visual Hierarchy", "Accessibility", "Brand Compliance", "Information Design"],
+                "comments": "Dashboard meets all design system guidelines. Accessibility testing complete with WCAG 2.2 AA compliance."
+            },
+            "engineering": {
+                "validation_status": "Approved",
+                "validator": "Priya Sharma, SVP Engineering",
+                "validation_date": "2025-03-30",
+                "key_focus_areas": ["Performance", "Scalability", "Code Quality", "Security"],
+                "comments": "Load testing complete with support for 5,000 concurrent users. All security reviews passed. Query optimization complete."
+            },
+            "data": {
+                "validation_status": "Approved",
+                "validator": "James Wilson, SVP Data & Analytics",
+                "validation_date": "2025-03-31",
+                "key_focus_areas": ["Data Accuracy", "Calculation Methodology", "Refresh Rates", "Data Governance"],
+                "comments": "All KPI calculations validated against financial systems. Data lineage documented. Privacy impact assessment complete."
+            },
+            "quality_assurance": {
+                "validation_status": "Approved",
+                "validator": "Aisha Mohammed, SVP Quality Assurance",
+                "validation_date": "2025-04-01",
+                "key_focus_areas": ["Functional Testing", "Performance Testing", "Regression Testing", "User Acceptance"],
+                "comments": "2,500 test cases executed with 99.8% pass rate. All critical and high severity issues resolved. Chaos testing complete."
+            }
+        },
+        
+        "training_and_adoption": {
+            "training_materials": {
+                "executive_overview": "45-minute session with quick reference guide",
+                "power_user_training": "Full-day workshop with certification",
+                "analyst_training": "Two-day technical training with hands-on exercises",
+                "self_service_resources": "Video library, searchable knowledge base, interactive tutorials"
+            },
+            "support_model": {
+                "tier_1": "24/7 global help desk",
+                "tier_2": "Dashboard support team (business hours)",
+                "tier_3": "Data engineering and development team"
+            },
+            "adoption_metrics": {
+                "target_usage": "90% of intended users weekly",
+                "tracked_behaviors": ["Login Frequency", "Feature Usage", "Export Activity", "Collaboration"],
+                "success_criteria": "80% of decisions referencing dashboard data within 3 months"
+            }
+        }
+    }
+}
