@@ -241,60 +241,201 @@ flowchart TB
 ### **🎯 Enterprise Architecture Overview**
 
 ```mermaid
-graph TB
-    subgraph "🌐 Multi-Channel Frontend"
-        WEB[Web Portal<br/>React + TypeScript<br/>Enterprise Components]
-        MOBILE[Mobile Apps<br/>iOS + Android + Huawei<br/>Offline Capability]
-        API_DOCS[Developer Portal<br/>OpenAPI Documentation<br/>Interactive Testing]
-    end
-    
-    subgraph "🚪 API Gateway & Security"
-        GATEWAY[API Gateway<br/>Rate Limiting + Auth<br/>Circuit Breaker Patterns]
-        SECURITY[Security Layer<br/>OAuth2 + JWT + RBAC<br/>Zero Trust Architecture]
-    end
-    
-    subgraph "🔄 OOD Orchestration"
-        OOD_ENGINE[OOD Orchestration Engine<br/>Journey Coordination<br/>IATA ONE Order Ready]
-    end
-    
-    subgraph "🧠 AI & Intelligence"
-        CUSTOMER_AI[Customer Intelligence<br/>50M+ Profiles<br/>Real-Time Analytics]
-        PRICING_AI[Dynamic Pricing<br/>142 Scenarios<br/>ML Optimization]
-        FORECAST_AI[Demand Forecasting<br/>83+ Models<br/>98.2% Accuracy]
-    end
-    
-    subgraph "⚡ Core Services"
-        OFFER[Offer Management<br/>AI Bundling<br/>Personalization]
-        ORDER[Order Processing<br/>Lifecycle Management<br/>State Tracking]
-        DISTRIBUTION[Distribution<br/>Multi-Channel<br/>Real-Time Sync]
-    end
-    
-    subgraph "💾 Data Infrastructure"
-        POSTGRES[(PostgreSQL<br/>ACID Compliance)]
-        MONGO[(MongoDB<br/>Document Store)]
-        REDIS[(Redis<br/>Caching Layer)]
-        KAFKA[Kafka<br/>Event Streaming]
-    end
-    
-    subgraph "☁️ Cloud Infrastructure"
-        K8S[Kubernetes<br/>Container Orchestration]
-        MONITORING[Prometheus + Grafana<br/>Observability Stack]
-    end
-    
-    WEB & MOBILE & API_DOCS --> GATEWAY
-    GATEWAY --> SECURITY --> OOD_ENGINE
-    
-    OOD_ENGINE --> OFFER & ORDER & DISTRIBUTION
-    
-    CUSTOMER_AI --> OFFER
-    PRICING_AI --> OFFER
-    FORECAST_AI --> PRICING_AI
-    
-    OFFER & ORDER & DISTRIBUTION --> POSTGRES & MONGO & REDIS
-    KAFKA --> CUSTOMER_AI & PRICING_AI & FORECAST_AI
-    
-    K8S --> OOD_ENGINE & OFFER & ORDER & DISTRIBUTION
-    MONITORING -.-> K8S
+flowchart TB
+ subgraph subGraph0["**🌐 Multi-Channel Frontend Applications**"]
+        WEB["Web Portal<br>React + TypeScript<br>Enterprise Components"]
+        MOBILE["Mobile Apps<br>iOS + Android + Huawei<br>Offline Capability"]
+        API_DOCS["Developer Portal<br>OpenAPI Documentation<br>Interactive Testing"]
+  end
+ subgraph subGraph1["**🚪 Enterprise Gateway & Security**"]
+        LB["Global Load Balancer<br>Multi-Region Failover<br>99.99% Availability"]
+        WAF["Web Application Firewall<br>OWASP + DDoS Protection<br>Real-time Threat Intel"]
+        GATEWAY["API Gateway<br>50K+ RPS, &lt;50ms<br>Rate Limiting + Circuit Breaker"]
+        SECURITY["Zero Trust Security<br>OAuth2 + JWT + RBAC<br>MFA + Biometric Auth"]
+  end
+ subgraph subGraph2["**🔄 OOD Orchestration Core - 3 Services**"]
+        OOD_ENGINE["OOD Orchestration Engine<br>Journey Coordination<br>IATA ONE Order Certified<br>95%+ Completion Rate"]
+        OFFER_MGT["Offer Management Engine<br>Dynamic Offer Creation<br>AI-Powered Bundling<br>500+ Templates"]
+        ORDER_PLATFORM["Order Processing Platform<br>End-to-End Lifecycle<br>1M+ Orders/Day<br>2s Processing"]
+  end
+ subgraph subGraph3["**🧠 Complete AI Intelligence Layer - 8 Services**"]
+        CUSTOMER_AI["Customer Intelligence Platform<br>360° Customer Analytics<br>50M+ Real-Time Profiles<br>ML Segmentation"]
+        PRICING_AI["Pricing Service<br>Dynamic Pricing Engine<br>142 Market Scenarios<br>200ms Response"]
+        FORECAST_AI["Forecasting Service<br>AI-Powered Demand Forecasting<br>83+ ML Models<br>98.2% Accuracy"]
+        ANCILLARY["Ancillary Service<br>Revenue Optimization<br>300+ Products<br>+34% Revenue Increase"]
+        PROMOTION["Promotion Service<br>Campaign Management<br>500+ Active Campaigns<br>96.8% Targeting Accuracy"]
+        NETWORK["Network Planning Service<br>Route &amp; Capacity Optimization<br>1000+ Routes<br>Monte Carlo Simulation"]
+        P2P["Procure-to-Pay Service<br>Financial Automation<br>2B+ Volume Processing<br>Cost Intelligence"]
+        DISTRIBUTION["Distribution Service<br>Multi-Channel Distribution<br>200+ Channel Partners<br>Real-Time Sync"]
+  end
+ subgraph subGraph4["**⚡ Supporting Business Services - 5 Services**"]
+        USER_MGT["User Management Service<br>Identity &amp; Access Management<br>10M+ Users<br>100ms Authentication"]
+        CX_ENGINE["Customer Experience Engine<br>Journey Orchestration<br>4.9/5 Satisfaction Target<br>Experience Optimization"]
+        INTEGRATION["Advanced Services Integration<br>Enterprise Integration Hub<br>500+ System Integrations<br>99.9% Reliability"]
+        ORDER_SERVICE["Order Service<br>Core Order Management<br>500K+ Orders/Day<br>1.5s Processing"]
+        API_SVC["API Gateway Service<br>Service Mesh Management<br>Traffic Orchestration<br>Monitoring &amp; Analytics"]
+  end
+ subgraph subGraph5["**📊 Analytics & Data Platform - 5 Engines**"]
+        KPI_ENGINE["KPI Engine<br>Real-Time Airline KPIs<br>RASK, Load Factor, OTP<br>Automated Alerting"]
+        ML_ENGINE["ML Forecasting Engine<br>83+ Retrainable Models<br>ARIMA, LSTM, Ensemble<br>Drift Detection"]
+        AB_ENGINE["A/B Testing Engine<br>Multi-Armed Bandit<br>Thompson Sampling<br>Statistical Validation"]
+        PIPELINE_ENGINE["Data Pipeline Engine<br>Real-Time ETL<br>Data Quality Management<br>Prometheus Metrics"]
+        GOVERNANCE_ENGINE["Data Governance Engine<br>Compliance Management<br>GDPR, CCPA, PCI-DSS<br>Audit Trail Logging"]
+  end
+ subgraph subGraph6["**💾 High-Performance Data Infrastructure**"]
+        POSTGRES_CLUSTER[("PostgreSQL Cluster<br>ACID Compliance<br>Multi-Master Replication<br>25K+ Transactions/sec")]
+        MONGODB_CLUSTER[("MongoDB Cluster<br>Document Store<br>Global Sharding<br>50K+ Reads/sec")]
+        REDIS_CLUSTER[("Redis Cluster<br>In-Memory Cache<br>Sub-Millisecond Latency<br>1M+ Operations/sec")]
+        KAFKA_CLUSTER["Apache Kafka Cluster<br>Event Streaming<br>Trillion+ Events/Day<br>Real-Time Processing"]
+        ELASTICSEARCH[("Elasticsearch Cluster<br>Search + Analytics<br>Distributed Index<br>10K+ Queries/sec")]
+        DATA_LAKE["Enterprise Data Lake<br>Petabyte Storage<br>Multi-Format Support<br>Real-Time Ingestion"]
+  end
+ subgraph subGraph7["**☁️ Cloud-Native Infrastructure Platform**"]
+        K8S_ORCHESTRATION["Kubernetes Orchestration<br>16 Service Deployment<br>Auto-Scaling + Self-Healing<br>Multi-Cloud Support"]
+        SERVICE_MESH["Service Mesh Istio<br>Traffic Management<br>Security Policies<br>Observability"]
+        MONITORING_STACK["Observability Stack<br>Prometheus + Grafana + Jaeger<br>Distributed Tracing<br>Real-Time Alerting"]
+        CICD_PLATFORM["CI/CD Platform<br>GitOps Workflow<br>Automated Testing<br>Zero-Downtime Deployment"]
+  end
+ subgraph subGraph8["**🔒 Security & Compliance Platform**"]
+        SECURITY_CENTER["Security Operations Center<br>24/7 Monitoring<br>Threat Intelligence<br>Incident Response"]
+        COMPLIANCE_AUTO["Compliance Automation<br>Policy as Code<br>Automated Auditing<br>Regulatory Reporting"]
+        SECRETS_VAULT["Secrets Management<br>Dynamic Credentials<br>Rotation Policies<br>HSM Integration"]
+        CERT_MGMT["Certificate Management<br>Auto-Renewal<br>Multi-CA Support<br>Zero-Downtime Rotation"]
+  end
+ subgraph subGraph9["**🛠️ Operational Excellence Platform**"]
+        SCRIPTS_AUTO["9 Automation Scripts<br>Dev Environment Setup<br>Deployment Automation<br>Performance Testing"]
+        QA_FRAMEWORK["Comprehensive QA Framework<br>Security Testing<br>Compliance Validation<br>Performance Benchmarking"]
+        COMMON_LIBS["Common Libraries<br>Shared Components<br>Enterprise Models<br>Utility Functions"]
+  end
+    WEB --> LB
+    MOBILE --> LB
+    API_DOCS --> LB
+    LB --> WAF
+    WAF --> GATEWAY
+    GATEWAY --> SECURITY
+    SECURITY --> OOD_ENGINE
+    OOD_ENGINE --> OFFER_MGT & ORDER_PLATFORM & DISTRIBUTION
+    CUSTOMER_AI --> OFFER_MGT & CX_ENGINE & MONGODB_CLUSTER & DATA_LAKE
+    PRICING_AI --> OFFER_MGT & ORDER_PLATFORM & REDIS_CLUSTER & POSTGRES_CLUSTER
+    FORECAST_AI --> PRICING_AI & NETWORK & DATA_LAKE & MONGODB_CLUSTER
+    ANCILLARY --> OFFER_MGT
+    PROMOTION --> CUSTOMER_AI & OFFER_MGT
+    NETWORK --> DISTRIBUTION & ORDER_PLATFORM
+    P2P --> PRICING_AI & ORDER_PLATFORM
+    USER_MGT --> SECURITY & CUSTOMER_AI
+    CX_ENGINE --> ORDER_PLATFORM
+    INTEGRATION --> DISTRIBUTION & P2P
+    ORDER_SERVICE --> ORDER_PLATFORM
+    API_SVC --> GATEWAY
+    KPI_ENGINE --> CUSTOMER_AI & PRICING_AI & ORDER_PLATFORM
+    ML_ENGINE --> FORECAST_AI & CUSTOMER_AI
+    AB_ENGINE --> OFFER_MGT & PROMOTION
+    PIPELINE_ENGINE --> DATA_LAKE & KAFKA_CLUSTER
+    GOVERNANCE_ENGINE --> USER_MGT & CUSTOMER_AI
+    ORDER_PLATFORM --> POSTGRES_CLUSTER & KAFKA_CLUSTER
+    OFFER_MGT --> REDIS_CLUSTER & ELASTICSEARCH
+    DISTRIBUTION --> POSTGRES_CLUSTER & KAFKA_CLUSTER
+    KAFKA_CLUSTER --> ML_ENGINE & KPI_ENGINE & PIPELINE_ENGINE
+    ELASTICSEARCH --> OFFER_MGT & CUSTOMER_AI & DISTRIBUTION
+    K8S_ORCHESTRATION --> OOD_ENGINE & OFFER_MGT & ORDER_PLATFORM & CUSTOMER_AI & PRICING_AI & FORECAST_AI & ANCILLARY & PROMOTION & NETWORK & P2P & DISTRIBUTION & USER_MGT & CX_ENGINE & INTEGRATION & ORDER_SERVICE
+    SERVICE_MESH --> K8S_ORCHESTRATION
+    MONITORING_STACK -.-> K8S_ORCHESTRATION
+    CICD_PLATFORM --> K8S_ORCHESTRATION
+    SECURITY_CENTER --> SECURITY & USER_MGT
+    COMPLIANCE_AUTO --> GOVERNANCE_ENGINE & USER_MGT
+    SECRETS_VAULT --> P2P & INTEGRATION & SECURITY
+    CERT_MGMT --> GATEWAY & SECURITY
+    SCRIPTS_AUTO -.-> K8S_ORCHESTRATION & CICD_PLATFORM
+    QA_FRAMEWORK -.-> CICD_PLATFORM
+    COMMON_LIBS -.-> K8S_ORCHESTRATION
+
+     WEB:::Ash
+     MOBILE:::Ash
+     API_DOCS:::Ash
+     LB:::WarholPop
+     LB:::MatisseCoral
+     WAF:::MatisseCoral
+     GATEWAY:::MatisseCoral
+     SECURITY:::MatisseCoral
+     OOD_ENGINE:::HockWaveBlue
+     OFFER_MGT:::HockWaveBlue
+     ORDER_PLATFORM:::HockWaveBlue
+     CUSTOMER_AI:::MatisseLavender
+     PRICING_AI:::MatisseLavender
+     FORECAST_AI:::MatisseLavender
+     ANCILLARY:::MatisseLavender
+     PROMOTION:::MatisseLavender
+     NETWORK:::MatisseLavender
+     P2P:::MatisseLavender
+     DISTRIBUTION:::MatisseLavender
+     USER_MGT:::OrozcoTeal
+     CX_ENGINE:::OrozcoTeal
+     INTEGRATION:::OrozcoTeal
+     ORDER_SERVICE:::OrozcoTeal
+     API_SVC:::OrozcoTeal
+     KPI_ENGINE:::PollockChaos
+     ML_ENGINE:::PollockChaos
+     AB_ENGINE:::PollockChaos
+     PIPELINE_ENGINE:::PollockChaos
+     GOVERNANCE_ENGINE:::PollockChaos
+     POSTGRES_CLUSTER:::Aqua
+     POSTGRES_CLUSTER:::Pine
+     MONGODB_CLUSTER:::Aqua
+     MONGODB_CLUSTER:::Pine
+     REDIS_CLUSTER:::Aqua
+     REDIS_CLUSTER:::Pine
+     KAFKA_CLUSTER:::DegasGreen
+     ELASTICSEARCH:::MiroTeal
+     ELASTICSEARCH:::DegasGreen
+     ELASTICSEARCH:::Aqua
+     ELASTICSEARCH:::Pine
+     DATA_LAKE:::DegasGreen
+     K8S_ORCHESTRATION:::MonetBlue
+     SERVICE_MESH:::MonetBlue
+     MONITORING_STACK:::MonetBlue
+     CICD_PLATFORM:::MonetBlue
+     SECURITY_CENTER:::Rose
+     COMPLIANCE_AUTO:::Rose
+     SECRETS_VAULT:::Rose
+     CERT_MGMT:::Rose
+     SCRIPTS_AUTO:::VanGoghYellow
+     QA_FRAMEWORK:::VanGoghYellow
+     COMMON_LIBS:::VanGoghYellow
+    classDef CezannePeach stroke-width:1px, stroke-dasharray:none, stroke:#E2A07D, fill:#FBE7DA, color:#6D4532
+    classDef KlimtGold stroke-width:1px, stroke-dasharray:none, stroke:#D4A017, fill:#FBF2C1, color:#705A16
+    classDef Peach stroke-width:1px, stroke-dasharray:none, stroke:#FBB35A, fill:#FFEFDB, color:#8F632D
+    classDef RenoirPink stroke-width:1px, stroke-dasharray:none, stroke:#E4A0A0, fill:#FBE5E5, color:#7D3E3E
+    classDef HokusaiWave stroke-width:1px, stroke-dasharray:none, stroke:#6188A9, fill:#D4E8F2, color:#2A425D
+    classDef OkeeffeSunset stroke-width:1px, stroke-dasharray:none, stroke:#FF9933, fill:#FFF2E6, color:#CC6600
+    classDef MondrianRed stroke-width:1px, stroke-dasharray:none, stroke:#CC0000, fill:#FFCCCC, color:#990000
+    classDef TurnerMist stroke-width:1px, stroke-dasharray:none, stroke:#B8C4D1, fill:#EAF2F8, color:#4A5B6F
+    classDef GoldFoil stroke-width:1px, stroke-dasharray:none, stroke:#C5941B, fill:#F7EBD8, color:#C5941B
+    classDef Sky stroke-width:1px, stroke-dasharray:none, stroke:#374D7C, fill:#E2EBFF, color:#374D7C
+    classDef PicassoBlue stroke-width:1px, stroke-dasharray:none, stroke:#5A84A2, fill:#CDE0F2, color:#2D4661
+    classDef MiroTeal stroke-width:1px, stroke-dasharray:none, stroke:#008080, fill:#B2DFDB, color:#005757
+    classDef Aqua stroke-width:1px, stroke-dasharray:none, stroke:#46EDC8, fill:#DEFFF8, color:#378E7A
+    classDef DegasGreen stroke-width:1px, stroke-dasharray:none, stroke:#A7C796, fill:#E6F4E2, color:#3E6A42
+    classDef MatisseLavender stroke-width:1px, stroke-dasharray:none, stroke:#B39DBC, fill:#ECE3F5, color:#4E3A5E
+    classDef MonetBlue stroke-width:1px, stroke-dasharray:none, stroke:#87AFC7, fill:#D4EAF7, color:#30577B
+    classDef VanGoghYellow stroke-width:1px, stroke-dasharray:none, stroke:#E3B448, fill:#FDF6C9, color:#7D5A17
+    classDef HockWaveBlue stroke-width:1px, stroke-dasharray:none, stroke:#1976D2, fill:#BBDEFB, color:#0D47A1
+    classDef Rose stroke-width:1px, stroke-dasharray:none, stroke:#FF5978, fill:#FFDFE5, color:#8E2236
+    classDef Ash stroke-width:1px, stroke-dasharray:none, stroke:#999999, fill:#EEEEEE, color:#000000
+    classDef WarholPop stroke-width:1px, stroke-dasharray:none, stroke:#FF3366, fill:#FFE6F0, color:#B3003E
+    classDef MatisseCoral stroke-width:1px, stroke-dasharray:none, stroke:#FF7043, fill:#FFE0B2, color:#BF360C
+    classDef PollockChaos stroke-width:1px, stroke-dasharray:none, stroke:#8A0303, fill:#F2C6C6, color:#520000
+    classDef OrozcoTeal stroke-width:1px, stroke-dasharray:none, stroke:#009688, fill:#E0F2F1, color:#00695C
+    classDef Pine stroke-width:1px, stroke-dasharray:none, stroke:#254336, fill:#27654A, color:#FFFFFF
+    style subGraph3 fill:transparent
+    style subGraph9 fill:transparent
+    style subGraph2 fill:#FFF9C4
+    style subGraph8 fill:transparent
+    style subGraph0 fill:transparent
+    style subGraph1 fill:transparent
+    style subGraph6 fill:transparent
+    style subGraph4 fill:transparent
+    style subGraph5 fill:transparent
+    style subGraph7 fill:transparent
 ```
 ---
 ## 📋 **System Requirements**
