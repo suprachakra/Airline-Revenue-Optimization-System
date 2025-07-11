@@ -748,9 +748,6 @@ This project demonstrates the technical depth and business understanding require
 **🚀 IAROS: Demonstrating the Future of Airline Revenue Optimization**  
 *Technical Excellence | Industry Expertise | Modern Architecture*
 
-[![GitHub Stars](https://img.shields.io/github/stars/suprachakra/IAROS?style=social)](https://github.com/suprachakra/IAROS)
-[![GitHub Forks](https://img.shields.io/github/forks/suprachakra/IAROS?style=social)](https://github.com/suprachakra/IAROS)
-
 *Built with passion for aviation technology and software engineering excellence*
 
 </div>
