@@ -13,7 +13,7 @@
 **Comprehensive Technical Demonstration of Modern Airline Revenue Optimization**  
 *Showcasing Offer-Order-Distribution (OOD) Architecture with 16 Enterprise Microservices*
 
-[🏗️ **Architecture**](#-ood-the-future-of-airline-retailing) | [🚀 **Quick Start**](#-quick-demo-setup) | [📊 **Technical Specs**](#-technical-architecture) | [🧪 **Testing**](#-testing--validation)
+[🏗️ **Architecture**](#-enterprise-architecture-overview) | [🚀 **Quick Start**](#-quick-demo-setup) | [📊 **Technical Specs**](#-technical-architecture) | [🧪 **Testing**](#-testing--validation)
 
 </div>
 
@@ -680,7 +680,7 @@ IAROS/
 
 ---
 
-## 🏆 **Technical Achievements Demonstrated**
+## 🏆 **Technical Stack & Integrations**
 
 ### **✅ Advanced Architecture Patterns**
 - Microservices with domain-driven design
