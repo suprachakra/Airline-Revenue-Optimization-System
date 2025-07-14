@@ -13,7 +13,7 @@
 **Comprehensive Technical Demonstration of Modern Airline Revenue Optimization**  
 *Showcasing Offer-Order-Distribution (OOD) Architecture with 16 Enterprise Microservices*
 
-[🏗️ **Architecture**](#-enterprise-architecture-overview) | [🚀 **Quick Start**](#-quick-demo-setup) | [📊 **Technical Specs**](#-technical-architecture) | [🧪 **Testing**](#-testing--validation)
+[🏗️ **Architecture**](#-enterprise-architecture-overview) | [🚀 **Quick Start**](#-quick-demo-setup) | [📊 **Technical Specs**](#-technical-specifications) | [🧪 **Testing**](#-testing--validation)
 
 </div>
 
