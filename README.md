@@ -680,7 +680,7 @@ IAROS/
 
 ---
 
-## 🏆 **Technical Stack & Integrations**
+## 🏆 **Technical Specifications**
 
 ### **✅ Advanced Architecture Patterns**
 - Microservices with domain-driven design
