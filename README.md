@@ -641,7 +641,18 @@ IAROS/
 │   ├── ood_orchestration_engine/   # Core OOD coordination
 │   ├── offer_management_engine/    # AI-powered offer creation
 │   ├── order_processing_platform/  # IATA ONE Order compliant
-│   └── ... (13 more services)
+│   ├── ancillary_service/
+│   ├── distribution_service
+│   ├── forecasting_service
+│   ├── network_planning_service
+│   ├── pricing_service
+│   ├── procure_to_pay_service
+│   ├── promotion_service
+│   ├── user_management_service
+│   ├── customer_intelligence_platform
+│   ├── advanced_services_integration
+│   ├── customer_experience_engine
+│   └── api_gateway
 ├── 🌐 frontend/                    # Multi-platform applications
 │   ├── web-portal/                 # React enterprise web app
 │   └── mobile-app/                 # iOS/Android/Huawei apps
