@@ -442,7 +442,7 @@ flowchart TB
 
 ### **Development Environment**
 - **Operating System**: Linux (Ubuntu 20.04+), macOS 11+, or Windows 11 with WSL2
-- **Container Runtime**: Docker 20.10+ and Docker Compose 2.0+
+- **Container Runtime**: Docker 20.10+ & Docker Compose 2.0+
 - **Languages**: Go 1.19+, Python 3.9+, Node.js 18+
 - **Databases**: PostgreSQL 14+, MongoDB 6.0+, Redis 7.0+
 
