@@ -750,7 +750,7 @@ IAROS/
 - **Industry Standards** - IATA compliance, NDC, ONE Order implementation
 - **Software Engineering** - Clean code, testing, documentation, DevOps practices
 
-This project demonstrates the technical depth and business understanding required to build enterprise-grade airline systems while showcasing the revolutionary potential of Offer-Order-Distribution architecture in transforming airline retailing.
+This project demonstrates the technical depth & business understanding required to build enterprise-grade airline systems while showcasing the revolutionary potential of Offer-Order-Distribution architecture in transforming airline retailing.
 
 ---
 
