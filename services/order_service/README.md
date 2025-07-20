@@ -514,11 +514,3 @@ messaging:
 - **[Security Guide](./docs/security.md)** - Security implementation details
 
 ---
-
-<div align="center">
-
-**Enterprise Order Management Excellence by IAROS**
-
-[Website](https://iaros.ai) • [Documentation](https://docs.iaros.ai) • [Support](mailto:support@iaros.ai)
-
-</div> 
