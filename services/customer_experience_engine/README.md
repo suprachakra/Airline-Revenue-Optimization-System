@@ -546,11 +546,3 @@ service_recovery:
 - **[Integration Manual](./docs/integration.md)** - Touchpoint integration guide
 
 ---
-
-<div align="center">
-
-**Customer Experience Excellence by IAROS**
-
-[Website](https://iaros.ai) • [Documentation](https://docs.iaros.ai) • [Support](mailto:support@iaros.ai)
-
-</div> 
