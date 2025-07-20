@@ -534,11 +534,3 @@ helm install offer-management ./helm-chart
 - [Performance Optimization](./docs/performance.md)
 
 ---
-
-<div align="center">
-
-**Built with ❤️ by the IAROS Team**
-
-[Website](https://iaros.ai) • [Documentation](https://docs.iaros.ai) • [Support](mailto:support@iaros.ai)
-
-</div>
