@@ -9,7 +9,7 @@
 
 **Intelligent Ancillary Revenue Optimization with AI-Powered Personalization**
 
-*300+ ancillary products with 98.2% recommendation accuracy and $500M+ revenue*
+*300+ ancillary products with 98.2% recommendation accuracy*
 
 </div>
 
