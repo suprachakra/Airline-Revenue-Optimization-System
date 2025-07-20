@@ -1002,11 +1002,3 @@ kubectl get svc api-gateway
 - **[Integration Examples](./docs/integration.md)** - Partner integration examples
 
 ---
-
-<div align="center">
-
-**Enterprise API Gateway Excellence by IAROS**
-
-[Website](https://iaros.ai) • [Documentation](https://docs.iaros.ai) • [Support](mailto:support@iaros.ai)
-
-</div>
