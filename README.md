@@ -744,7 +744,7 @@ IAROS/
 
 **IAROS** represents a comprehensive technical demonstration of modern airline revenue optimization systems, showcasing expertise in:
 
-- **Enterprise Architecture** - Microservices, cloud-native, event-driven design
+- **Enterprise Architecture** - Microservices, cloud-native,event-driven design
 - **Airline Domain Knowledge** - Deep understanding of aviation industry challenges
 - **Modern Technology Stack** - Go, Python, React, Kubernetes, AI/ML integration
 - **Industry Standards** - IATA compliance, NDC, ONE Order implementation
