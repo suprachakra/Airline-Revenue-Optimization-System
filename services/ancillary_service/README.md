@@ -515,19 +515,4 @@ caching:
 
 ## 📚 Documentation
 
-- **[Product Catalog Management](./docs/product-catalog.md)** - Product management and catalog operations
-- **[AI Recommendation Engine](./docs/recommendations.md)** - ML-powered recommendation system
-- **[Revenue Optimization](./docs/revenue-optimization.md)** - Revenue management strategies
-- **[Partner Integration](./docs/partner-integration.md)** - Third-party service integration
-- **[Analytics Framework](./docs/analytics.md)** - Business intelligence and reporting
-- **[API Reference](./docs/api.md)** - Complete API documentation
-
----
-
-<div align="center">
-
-**Ancillary Revenue Excellence by IAROS**
-
-[Website](https://iaros.ai) • [Documentation](https://docs.iaros.ai) • [Support](mailto:support@iaros.ai)
-
-</div>
+- **[Ancillary Services Engine](./Tech_Strategy/Ancillary_Optimization.md)** - ML-powered Etihad Airways Ancillary Services (110 Validated Offerings)
