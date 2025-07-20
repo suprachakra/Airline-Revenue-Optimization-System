@@ -641,19 +641,19 @@ IAROS/
 │   ├── ood_orchestration_engine/   # Core OOD coordination
 │   ├── offer_management_engine/    # AI-powered offer creation
 │   ├── order_processing_platform/  # IATA ONE Order compliant
-│   ├── ancillary_service/
-│   ├── distribution_service
-│   ├── forecasting_service
-│   ├── network_planning_service
-│   ├── pricing_service
-│   ├── procure_to_pay_service
-│   ├── promotion_service
-│   ├── user_management_service
-│   ├── customer_intelligence_platform
-│   ├── advanced_services_integration
-│   ├── customer_experience_engine
-│   └── api_gateway
-├── 🌐 frontend/                    # Multi-platform applications
+│   ├── ancillary_service/          # Ancillary revenue optimization
+│   ├── distribution_service/       # Multi-channel distribution
+│   ├── forecasting_service/        # AI-powered demand forecasting
+│   ├── network_planning_service    # Strategic route planning
+│   ├── pricing_service             # Dynamic pricing engine (142 scenarios)
+│   ├── procure_to_pay_service      # Financial management automation
+│   ├── promotion_service           # Campaign & loyalty management
+│   ├── user_management_service     # Identity & access management
+│   ├── customer_intelligence_platform  # AI-powered customer analytics
+│   ├── advanced_services_integration   # Enterprise integration hub
+│   ├── customer_experience_engine      # Journey orchestration & UX optimization
+│   └── api_gateway                 # Service mesh gateway
+├── 🌐 frontend/                   # Multi-platform applications
 │   ├── web-portal/                 # React enterprise web app
 │   └── mobile-app/                 # iOS/Android/Huawei apps
 ├── 🏗️ infrastructure/             # Cloud-native deployment
