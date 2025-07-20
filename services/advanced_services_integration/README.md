@@ -573,11 +573,3 @@ databases:
 - **[API Reference](./docs/api.md)** - Complete API documentation
 
 ---
-
-<div align="center">
-
-**Enterprise Integration Excellence by IAROS**
-
-[Website](https://iaros.ai) • [Documentation](https://docs.iaros.ai) • [Support](mailto:support@iaros.ai)
-
-</div> 
