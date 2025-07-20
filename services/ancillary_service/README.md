@@ -222,42 +222,100 @@ graph TD
 ## 🧠 Advanced AI Recommendation Architecture
 
 ```mermaid
-graph LR
-    subgraph "Data Sources"
-        A[Customer Profile<br/>Demographics/Preferences]
-        B[Purchase History<br/>Past Behavior/Patterns]
-        C[Browsing Behavior<br/>Real-time Interactions]
-        D[Contextual Data<br/>Location/Time/Device]
-        E[Social Signals<br/>Reviews/Ratings/Trends]
-    end
-    
-    subgraph "Feature Engineering"
-        F[Customer Features<br/>CLV/Propensity/Segments]
-        G[Product Features<br/>Attributes/Performance/Availability]
-        H[Contextual Features<br/>Situational/Temporal/Spatial]
-        I[Interaction Features<br/>Engagement/Conversion/Feedback]
-    end
-    
-    subgraph "ML Model Ensemble"
-        J[Collaborative Filtering<br/>Matrix Factorization]
-        K[Content-Based<br/>Feature Similarity]
-        L[Deep Learning<br/>Neural Networks]
-        M[Decision Trees<br/>Rule-based Logic]
-        N[Clustering<br/>Customer Segmentation]
-        O[Time Series<br/>Temporal Patterns]
-    end
-    
-    subgraph "Recommendation Output"
-        P[Personalized Products<br/>Individual Recommendations]
-        Q[Bundle Suggestions<br/>Product Combinations]
-        R[Pricing Optimization<br/>Dynamic Pricing]
-        S[Timing Optimization<br/>Best Purchase Moments]
-        T[Channel Optimization<br/>Touchpoint Strategy]
-    end
-    
-    A & B & C & D & E --> F & G & H & I
-    F & G & H & I --> J & K & L & M & N & O
-    J & K & L & M & N & O --> P & Q & R & S & T
+flowchart LR
+ subgraph subGraph0["Data Sources"]
+        A["Customer Profile<br>Demographics/Preferences"]
+        B["Purchase History<br>Past Behavior/Patterns"]
+        C["Browsing Behavior<br>Real-time Interactions"]
+        D["Contextual Data<br>Location/Time/Device"]
+        E["Social Signals<br>Reviews/Ratings/Trends"]
+  end
+ subgraph subGraph1["Feature Engineering"]
+        F["Customer Features<br>CLV/Propensity/Segments"]
+        G["Product Features<br>Attributes/Performance/Availability"]
+        H["Contextual Features<br>Situational/Temporal/Spatial"]
+        I["Interaction Features<br>Engagement/Conversion/Feedback"]
+  end
+ subgraph subGraph2["ML Model Ensemble"]
+        J["Collaborative Filtering<br>Matrix Factorization"]
+        K["Content-Based<br>Feature Similarity"]
+        L["Deep Learning<br>Neural Networks"]
+        M["Decision Trees<br>Rule-based Logic"]
+        N["Clustering<br>Customer Segmentation"]
+        O["Time Series<br>Temporal Patterns"]
+  end
+ subgraph subGraph3["Recommendation Output"]
+        P["Personalized Products<br>Individual Recommendations"]
+        Q["Bundle Suggestions<br>Product Combinations"]
+        R["Pricing Optimization<br>Dynamic Pricing"]
+        S["Timing Optimization<br>Best Purchase Moments"]
+        T["Channel Optimization<br>Touchpoint Strategy"]
+  end
+    A --> F & G & H & I
+    B --> F & G & H & I
+    C --> F & G & H & I
+    D --> F & G & H & I
+    E --> F & G & H & I
+    F --> J & K & L & M & N & O
+    G --> J & K & L & M & N & O
+    H --> J & K & L & M & N & O
+    I --> J & K & L & M & N & O
+    J --> P & Q & R & S & T
+    K --> P & Q & R & S & T
+    L --> P & Q & R & S & T
+    M --> P & Q & R & S & T
+    N --> P & Q & R & S & T
+    O --> P & Q & R & S & T
+
+     A:::VanGoghYellow
+     B:::VanGoghYellow
+     C:::VanGoghYellow
+     D:::VanGoghYellow
+     E:::VanGoghYellow
+     F:::DegasGreen
+     G:::DegasGreen
+     H:::OrozcoTeal
+     I:::OrozcoTeal
+     J:::PicassoBlue
+     K:::PicassoBlue
+     L:::PicassoBlue
+     M:::MonetBlue
+     N:::MonetBlue
+     O:::MonetBlue
+     P:::Rose
+     Q:::Rose
+     R:::PollockChaos
+     S:::WarholPop
+     T:::WarholPop
+    classDef CezannePeach stroke-width:1px, stroke-dasharray:none, stroke:#E2A07D, fill:#FBE7DA, color:#6D4532
+    classDef KlimtGold stroke-width:1px, stroke-dasharray:none, stroke:#D4A017, fill:#FBF2C1, color:#705A16
+    classDef Peach stroke-width:1px, stroke-dasharray:none, stroke:#FBB35A, fill:#FFEFDB, color:#8F632D
+    classDef RenoirPink stroke-width:1px, stroke-dasharray:none, stroke:#E4A0A0, fill:#FBE5E5, color:#7D3E3E
+    classDef HokusaiWave stroke-width:1px, stroke-dasharray:none, stroke:#6188A9, fill:#D4E8F2, color:#2A425D
+    classDef OkeeffeSunset stroke-width:1px, stroke-dasharray:none, stroke:#FF9933, fill:#FFF2E6, color:#CC6600
+    classDef MondrianRed stroke-width:1px, stroke-dasharray:none, stroke:#CC0000, fill:#FFCCCC, color:#990000
+    classDef TurnerMist stroke-width:1px, stroke-dasharray:none, stroke:#B8C4D1, fill:#EAF2F8, color:#4A5B6F
+    classDef GoldFoil stroke-width:1px, stroke-dasharray:none, stroke:#C5941B, fill:#F7EBD8, color:#C5941B
+    classDef Sky stroke-width:1px, stroke-dasharray:none, stroke:#374D7C, fill:#E2EBFF, color:#374D7C
+    classDef MiroTeal stroke-width:1px, stroke-dasharray:none, stroke:#008080, fill:#B2DFDB, color:#005757
+    classDef Aqua stroke-width:1px, stroke-dasharray:none, stroke:#46EDC8, fill:#DEFFF8, color:#378E7A
+    classDef MatisseLavender stroke-width:1px, stroke-dasharray:none, stroke:#B39DBC, fill:#ECE3F5, color:#4E3A5E
+    classDef HockWaveBlue stroke-width:1px, stroke-dasharray:none, stroke:#1976D2, fill:#BBDEFB, color:#0D47A1
+    classDef Ash stroke-width:1px, stroke-dasharray:none, stroke:#999999, fill:#EEEEEE, color:#000000
+    classDef MatisseCoral stroke-width:1px, stroke-dasharray:none, stroke:#FF7043, fill:#FFE0B2, color:#BF360C
+    classDef Pine stroke-width:1px, stroke-dasharray:none, stroke:#254336, fill:#27654A, color:#FFFFFF
+    classDef VanGoghYellow stroke-width:1px, stroke-dasharray:none, stroke:#E3B448, fill:#FDF6C9, color:#7D5A17
+    classDef DegasGreen stroke-width:1px, stroke-dasharray:none, stroke:#A7C796, fill:#E6F4E2, color:#3E6A42
+    classDef OrozcoTeal stroke-width:1px, stroke-dasharray:none, stroke:#009688, fill:#E0F2F1, color:#00695C
+    classDef PicassoBlue stroke-width:1px, stroke-dasharray:none, stroke:#5A84A2, fill:#CDE0F2, color:#2D4661
+    classDef MonetBlue stroke-width:1px, stroke-dasharray:none, stroke:#87AFC7, fill:#D4EAF7, color:#30577B
+    classDef Rose stroke-width:1px, stroke-dasharray:none, stroke:#FF5978, fill:#FFDFE5, color:#8E2236
+    classDef WarholPop stroke-width:1px, stroke-dasharray:none, stroke:#FF3366, fill:#FFE6F0, color:#B3003E
+    classDef PollockChaos stroke-width:1px, stroke-dasharray:none, stroke:#8A0303, fill:#F2C6C6, color:#520000
+    style subGraph0 fill:transparent
+    style subGraph1 fill:transparent
+    style subGraph2 fill:transparent
+    style subGraph3 fill:transparent
 ```
 
 ## 🚀 Features
