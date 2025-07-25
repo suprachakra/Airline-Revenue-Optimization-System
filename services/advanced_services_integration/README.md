@@ -569,7 +569,6 @@ databases:
 - **[Partner Onboarding](./docs/partner-onboarding.md)** - Partner integration onboarding guide
 - **[Data Transformation](./docs/data-transformation.md)** - AI-powered data transformation framework
 - **[Security Framework](./docs/security.md)** - Comprehensive security implementation
-- **[Monitoring Guide](./docs/monitoring.md)** - Integration monitoring and alerting
 - **[API Reference](./docs/api.md)** - Complete API documentation
 
 ---
