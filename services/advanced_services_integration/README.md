@@ -9,7 +9,7 @@
 
 **Comprehensive Enterprise Integration Platform with AI-Powered Orchestration**
 
-*500+ integrations managed with 99.9% reliability and $5B+ transaction value*
+*500+ integrations managed with 99.9% reliability & $5B+ transaction value*
 
 </div>
 
