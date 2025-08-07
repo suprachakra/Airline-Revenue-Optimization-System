@@ -21,7 +21,7 @@
 
 ## 🎯 **What is IAROS?**
 
-IAROS is a **comprehensive technical demonstration** of modern airline revenue optimization, built around the revolutionary **Offer-Order-Distribution (OOD)** architecture. This platform showcases how airlines can transform their retailing capabilities through unified customer journey orchestration, AI-powered personalization and seamless omnichannel distribution.
+IAROS is a **comprehensive technical demonstration** of modern airline revenue optimization, built around the revolutionary **Offer-Order-Distribution (OOD)** architecture. This platform showcases how airlines can transform their retailing capabilities through unified customer journey orchestration, AI-powered personalization & seamless omnichannel distribution.
 
 **This is a portfolio project demonstrating enterprise-grade airline systems architecture and implementation expertise.**
 
